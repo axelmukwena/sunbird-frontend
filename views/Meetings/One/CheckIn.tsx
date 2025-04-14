@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent, FC } from 'react';
 import { getMeetingById, Meeting } from '@/lib/database/collections/meetings';
 import { addAttendee, Attendee, checkInAttendee, getMeetingAttendees } from '@/lib/database/collections/attendees';
 import { CheckCircle, User, XCircle } from 'lucide-react';
+import Link from 'next/link';
 
 interface CheckInViewProps {
     meetingId: string;
@@ -156,36 +157,59 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
   // If user has successfully checked in
   if (checkedIn) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-sm max-w-md w-full overflow-hidden">
-          <div className="bg-green-50 px-4 py-5 sm:p-6 text-center">
-            <CheckCircle className="mx-auto size-12 text-green-500" />
-            <h3 className="mt-2 text-base/7 font-medium text-gray-900">Check-in Successful!</h3>
-            <p className="mt-1 text-sm/6 text-gray-500">
-              You have been checked in to the meeting.
-            </p>
-          </div>
-          
-          <div className="px-4 py-5 sm:p-6">
-            <h2 className="text-xl/7 font-semibold text-gray-900">{meeting.title}</h2>
-            <div className="mt-2 text-sm/6 text-gray-500">
-              <p>{formatDate(meeting.date)}</p>
-              <p className="mt-1">{meeting.start_time} - {meeting.end_time}</p>
-              <p className="mt-1">{meeting.location}</p>
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="flex-grow flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-sm max-w-md w-full overflow-hidden">
+            <div className="bg-green-50 px-4 py-5 sm:p-6 text-center">
+              <CheckCircle className="mx-auto size-12 text-green-500" />
+              <h3 className="mt-2 text-base/7 font-medium text-gray-900">Check-in Successful!</h3>
+              <p className="mt-1 text-sm/6 text-gray-500">
+                You have been checked in to the meeting.
+              </p>
             </div>
             
-            <div className="mt-6 border-t border-gray-200 pt-4">
-              <p className="text-sm/6 text-gray-500">Thank you for confirming your attendance. Have a great meeting!</p>
+            <div className="px-4 py-5 sm:p-6">
+              <h2 className="text-xl/7 font-semibold text-gray-900">{meeting.title}</h2>
+              <div className="mt-2 text-sm/6 text-gray-500">
+                <p>{formatDate(meeting.date)}</p>
+                <p className="mt-1">{meeting.start_time} - {meeting.end_time}</p>
+                <p className="mt-1">{meeting.location}</p>
+              </div>
+              
+              <div className="mt-6 border-t border-gray-200 pt-4">
+                <p className="text-sm/6 text-gray-500">Thank you for confirming your attendance. Have a great meeting!</p>
+              </div>
             </div>
           </div>
         </div>
+        
+        {/* Footer */}
+        <footer className="bg-white border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <p className="text-sm text-gray-500">
+                © 2025 Meetcheck. All rights reserved.
+              </p>
+              <p className="text-sm text-gray-500">
+                Built with ❤️ by <Link className='underline' target='_blank' href="https://www.linkedin.com/in/axelmukwena">Axel Mukwena</Link> at <Link className='underline' target='_blank' href="https://meyabase.com">meyabase.com</Link>
+              </p>
+              <div className="flex space-x-4 mt-4 md:mt-0">
+                <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Help</a>
+                <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Privacy</a>
+                <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Terms</a>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
     );
   }
   
   // Normal check-in form
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="flex-grow flex items-center justify-center p-4">
+    <div className="flex flex-col justify-center py-12 max-w-md w-full overflow-hidden">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="text-center text-2xl/7 font-bold text-gray-900">Meeting Check-in</h2>
       </div>
@@ -273,6 +297,26 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
           </form>
         </div>
       </div>
+      </div>
+      </div>
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-100 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-gray-500">
+              © 2025 Meetcheck. All rights reserved.
+            </p>
+            <p className="text-sm text-gray-500">
+                Built with ❤️ by <Link className='underline' target='_blank' href="https://www.linkedin.com/in/axelmukwena">Axel Mukwena</Link> at <Link className='underline' target='_blank' href="https://meyabase.com">meyabase.com</Link>
+            </p>
+            <div className="flex space-x-4 mt-4 md:mt-0">
+              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Help</a>
+              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Privacy</a>
+              <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Terms</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
