@@ -2,6 +2,7 @@
 import { Database } from '../types';
 import { supabaseClient } from '../client';
 import { generateID } from '@/utilities/helpers';
+import { CheckInMetadata, collectCheckInMetadata } from '@/lib/location/client';
 
 export type Attendee = Database['public']['Tables']['attendees']['Row'];
 export type NewAttendee = Database['public']['Tables']['attendees']['Insert'];
@@ -45,6 +46,19 @@ export async function addAttendee(attendee: Omit<NewAttendee, 'id'>) {
     ...attendee,
     id: generateID()
   };
+
+  // Collect location and device information if not provided
+  if (!attendee.location_info || !attendee.device_info) {
+    const metadata = await collectCheckInMetadata();
+    
+    // Only set these if they weren't provided in the input
+    if (!attendee.location_info) {
+      attendee.location_info = metadata.locationInfo;
+    }
+    if (!attendee.device_info) {
+      attendee.device_info = metadata.deviceInfo;
+    }
+  }
 
   const { data, error } = await supabaseClient
     .from('attendees')
@@ -92,39 +106,64 @@ export async function deleteAttendee(id: string) {
   return true;
 }
 
-// Update checkInAttendee function to accept fingerprint ID
+// Check in an attendee
 export async function checkInAttendee(
   id: string, 
   checkIn: boolean = true,
-  fingerprintId: string | null = null
+  fingerprintId: string | null = null,
+  clientMetadata: CheckInMetadata | null = null
 ): Promise<Attendee> {
-  const updates: UpdateAttendee = {
-  };
-  
-  if (checkIn) {
-    updates.check_in_time = new Date().toISOString();
+  try {
+    const updates: UpdateAttendee = {};
     
-    if (fingerprintId) {
-      updates.fingerprint_id = fingerprintId;
+    if (checkIn) {
+      // Set check-in time to now
+      updates.check_in_time = new Date().toISOString();
+      
+      // Set fingerprint ID if provided
+      if (fingerprintId) {
+        updates.fingerprint_id = fingerprintId;
+      }
+      
+      // Collect location and device information
+      if (!clientMetadata?.locationInfo || !clientMetadata?.deviceInfo) {
+        const metadata = await collectCheckInMetadata();
+        updates.location_info = metadata.locationInfo;
+        updates.device_info = metadata.deviceInfo;
+      } else if (clientMetadata) {
+        updates.location_info = clientMetadata.locationInfo;
+        updates.device_info = clientMetadata.deviceInfo;
+      }
+    } else {
+      // Clear check-in data when undoing a check-in
+      updates.check_in_time = null;
+      updates.fingerprint_id = null;
+      updates.location_info = null;
+      updates.device_info = null;
     }
-  } else {
-    updates.check_in_time = null;
-    updates.fingerprint_id = null;
-  }
+    
+    // Update the attendee record
+    const { data, error } = await supabaseClient
+      .from('attendees')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+        updated_by: 'system'
+      })
+      .eq('id', id)
+      .select()
+      .single();
 
-  const { data, error } = await supabaseClient
-    .from('attendees')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single();
+    if (error) {
+      console.error(`Error checking in attendee with ID ${id}:`, error);
+      throw error;
+    }
 
-  if (error) {
-    console.error(`Error updating attendee with ID ${id}:`, error);
+    return data;
+  } catch (error) {
+    console.error('Error in checkInAttendee:', error);
     throw error;
   }
-
-  return data;
 }
 
 // Add a function to get attendees with the same fingerprint

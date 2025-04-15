@@ -43,6 +43,33 @@ CREATE TABLE IF NOT EXISTS attendees (
     ON DELETE CASCADE
 );
 
+
+-- Update schema for attendees table to add location and device information columns
+
+ALTER TABLE attendees
+ADD COLUMN location_info JSONB DEFAULT NULL,
+ADD COLUMN device_info JSONB DEFAULT NULL;
+
+-- This JSON structure will contain:
+-- location_info: {
+--   latitude: number,
+--   longitude: number,
+--   address: string,
+--   ip_address: string,
+--   timestamp: string
+-- }
+-- 
+-- device_info: {
+--   browser: string,
+--   os: string,
+--   device: string,
+--   user_agent: string
+-- }
+
+-- Create indexes for better query performance
+CREATE INDEX idx_attendees_location_info ON attendees USING GIN (location_info);
+CREATE INDEX idx_attendees_device_info ON attendees USING GIN (device_info);
+
 -- Create index for meeting_id in attendees table
 CREATE INDEX IF NOT EXISTS idx_attendees_meeting_id ON attendees(meeting_id);
 

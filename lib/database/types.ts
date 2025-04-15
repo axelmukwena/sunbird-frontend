@@ -69,6 +69,19 @@ export interface Database {
           check_in_time: string | null
           notes: string | null
           fingerprint_id: string | null;
+          location_info: {
+            latitude: number | null;
+            longitude: number | null;
+            address: string | null;
+            ip_address: string | null;
+            timestamp: string;
+          } | null;
+          device_info: {
+            browser: string;
+            os: string;
+            device: string;
+            user_agent: string;
+          } | null;
           created_at: string
           created_by: string
           updated_at: string
@@ -83,6 +96,19 @@ export interface Database {
           check_in_time?: string | null
           notes?: string | null
           fingerprint_id?: string | null;
+          location_info?: {
+            latitude?: number | null;
+            longitude?: number | null;
+            address?: string | null;
+            ip_address?: string | null;
+            timestamp?: string;
+          } | null;
+          device_info?: {
+            browser?: string;
+            os?: string;
+            device?: string;
+            user_agent?: string;
+          } | null;
           created_by: string
         }
         Update: {
@@ -94,6 +120,19 @@ export interface Database {
           check_in_time?: string | null
           fingerprint_id?: string | null;
           notes?: string | null
+          location_info?: {
+            latitude?: number | null;
+            longitude?: number | null;
+            address?: string | null;
+            ip_address?: string | null;
+            timestamp?: string;
+          } | null;
+          device_info?: {
+            browser?: string;
+            os?: string;
+            device?: string;
+            user_agent?: string;
+          } | null;
           updated_by?: string | null
         }
       }

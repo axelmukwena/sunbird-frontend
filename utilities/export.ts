@@ -57,6 +57,20 @@ export const exportMeetingData = (meeting: Meeting, attendees: Attendee[]): void
     ['Attendees List'],
     ['']
   ];
+
+  // location_info: {
+  //   latitude: number | null;
+  //   longitude: number | null;
+  //   address: string | null;
+  //   ip_address: string | null;
+  //   timestamp: string;
+  // } | null;
+  // device_info: {
+  //   browser: string;
+  //   os: string;
+  //   device: string;
+  //   user_agent: string;
+  // } | null;
   
   // Headers for attendees table
   const attendeesHeader = [
@@ -64,8 +78,17 @@ export const exportMeetingData = (meeting: Meeting, attendees: Attendee[]): void
     'Email', 
     'Department', 
     'Check-in Status', 
-    'Check-in Time', 
-    'Notes'
+    'Check-in Time',
+    'Fingerprint ID',
+    'Notes',
+    'Location Latitude',
+    'Location Longitude',
+    'Location Address',
+    'IP Address',
+    'Device Browser',
+    'Device OS',
+    'Device Type',
+    'User Agent'
   ];
   
   // Attendee data
@@ -77,7 +100,16 @@ export const exportMeetingData = (meeting: Meeting, attendees: Attendee[]): void
     attendee.check_in_time 
       ? new Date(attendee.check_in_time).toLocaleString() 
       : '',
-    attendee.notes || ''
+    attendee.fingerprint_id || '',
+    attendee.notes || '',
+    attendee.location_info?.latitude || '',
+    attendee.location_info?.longitude || '',
+    attendee.location_info?.address || '',
+    attendee.location_info?.ip_address || '',
+    attendee.device_info?.browser || '',
+    attendee.device_info?.os || '',
+    attendee.device_info?.device || '',
+    attendee.device_info?.user_agent || ''
   ]);
   
   // Combine all data

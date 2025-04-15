@@ -25,6 +25,7 @@ import MeetingQRCode from '@/components/MeetingQRCode';
 import { useRouter } from 'next/navigation';
 import { exportMeetingData } from '@/utilities/export';
 import { load } from '@fingerprintjs/fingerprintjs';
+import { CheckInMetadata, collectCheckInMetadata } from '@/lib/location/client';
 
 
 
@@ -53,53 +54,40 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
     const [showAddAttendee, setShowAddAttendee] = useState(false);
     const [newAttendee, setNewAttendee] = useState<NewAttendee>(DEFAULT_ATTENDEE);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
   const [fingerprintId, setFingerprintId] = useState<string | null>(null);
   const [fingerprintLoading, setFingerprintLoading] = useState(true);
+  const [locationGranted, setLocationGranted] = useState<boolean | null>(null);
+    const [clientMetadata, setClientMetadata] = useState<CheckInMetadata | null>(null);
 
-  // Get device fingerprint on component mount
-  useEffect(() => {
-    async function getFingerprint() {
-      try {
-        setFingerprintLoading(true);
-        // Load the FingerprintJS agent
-        const fpAgent = await load();
-        // Get the visitor identifier
-        const result = await fpAgent.get();
-        
-        // Set the fingerprint ID
-        setFingerprintId(result.visitorId);
-      } catch (err) {
-        console.error('Error generating fingerprint:', err);
-      } finally {
-        setFingerprintLoading(false);
-      }
-    }
-    
-    getFingerprint();
-  }, []);
-
-  // Check if this device has already checked into this meeting
+  // Get device fingerprint and location info on component mount
     useEffect(() => {
-      async function checkDeviceCheckIn() {
-        if (!fingerprintId || !meetingId) return;
-        
+      async function initializeCheckIn() {
         try {
-          // Check for attendees who checked in with this fingerprint
-          const existingCheckIns = await getAttendeesByFingerprint(meetingId, fingerprintId);
+          setFingerprintLoading(true);
           
-          if (existingCheckIns.length > 0) {
-            setAlreadyCheckedIn(true);
-          }
+          // Collect metadata (fingerprint, location, etc.)
+          const metadata = await collectCheckInMetadata();
+          
+          // Get fingerprint ID separately for device restriction check
+          const fpAgent = await load();
+          const result = await fpAgent.get();
+          setFingerprintId(result.visitorId);
+          
+          // Save metadata for display and future use
+          setClientMetadata(metadata);
+          
+          // Check if location was granted
+          setLocationGranted(!!metadata.locationInfo?.latitude);
+          
         } catch (err) {
-          console.error('Error checking device check-in status:', err);
+          console.error('Error during check-in initialization:', err);
+        } finally {
+          setFingerprintLoading(false);
         }
       }
       
-      if (!fingerprintLoading && fingerprintId) {
-        checkDeviceCheckIn();
-      }
-    }, [fingerprintId, meetingId, fingerprintLoading]);
+      initializeCheckIn();
+    }, []);
     
     // Fetch meeting and attendees data
     useEffect(() => {
@@ -156,9 +144,14 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
                 alert('You have already checked in for this meeting.');
                 return;
             }
+
+            if (!locationGranted) {
+              alert('Location access is required for check-in.');
+              return;
+            }
             
             // Proceed with check-in including fingerprint
-            const updatedAttendee = await checkInAttendee(attendeeId, true, fingerprintId);
+            const updatedAttendee = await checkInAttendee(attendeeId, true, fingerprintId, clientMetadata);
             
             // Update the attendees list
             setAttendees(attendees.map(a => 
@@ -283,7 +276,7 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
     // Check if the meeting is active (can check in)
     const isMeetingActive = meeting?.status === 'scheduled' || meeting?.status === 'in-progress';
     
-    if (loading) {
+    if (loading || fingerprintLoading) {
       return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="animate-pulse text-center">
@@ -610,6 +603,12 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
                             Department
                           </th>
                           <th scope="col" className="px-3 py-3.5 text-left text-sm/6 font-semibold text-gray-900">
+                            Device
+                          </th>
+                          <th scope="col" className="px-3 py-3.5 text-left text-sm/6 font-semibold text-gray-900">
+                            Location
+                          </th>
+                          <th scope="col" className="px-3 py-3.5 text-left text-sm/6 font-semibold text-gray-900">
                             Status
                           </th>
                           <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
@@ -632,16 +631,34 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
                             <td className="whitespace-nowrap px-3 py-4 text-sm/6 text-gray-500">
                               {attendee.department || '-'}
                             </td>
+                            <td className="px-3 py-4 text-sm/6 text-gray-500">
+                              {attendee.device_info ? (
+                                <span title={`${attendee.device_info.browser} on ${attendee.device_info.os}`}>
+                                  {attendee.device_info.browser} Browser using {attendee.device_info.os} on {attendee.device_info.device}
+                                </span>
+                              ) : '-'}
+                            </td>
+                            <td className="px-3 py-4 text-sm/6 text-gray-500 max-w-xs">
+                              {attendee.location_info ? (
+                                <div title={attendee.location_info.address || ''}>
+                                  {attendee.location_info.address ? (
+                                    <span className="block">{attendee.location_info.address}</span>
+                                  ) : (
+                                    attendee.location_info.ip_address ? 
+                                    <span>IP: {attendee.location_info.ip_address}</span> : 
+                                    '-'
+                                  )}
+                                </div>
+                              ) : '-'}
+                            </td>
                             <td className="whitespace-nowrap px-3 py-4 text-sm/6">
                               {attendee.check_in_time ? (
                                 <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                   <CheckCircle className="size-3 mr-1" />
                                   Checked In
-                                  {attendee.check_in_time && (
-                                    <span className="ml-1 text-xs text-gray-500">
-                                      {new Date(attendee.check_in_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </span>
-                                  )}
+                                  <span className="ml-1 text-xs text-gray-500">
+                                    {new Date(attendee.check_in_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </span>
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20">

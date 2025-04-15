@@ -138,7 +138,7 @@ export default function MeetingsView(): JSX.Element {
           </Link>
         </div>
 
-        <div className="sm:flex sm:items-center sm:justify-between mb-6">
+        <div className="sm:flex sm:items-center sm:justify-between mb-6 space-x-6">
           <h2 className="text-base/7 font-semibold text-gray-900">Meetings</h2>
           <div className="mt-4 sm:mt-0 sm:flex-none">
             <Link

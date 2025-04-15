@@ -3,15 +3,14 @@
 import { useState, useEffect, FormEvent, FC } from 'react';
 import { getMeetingById, Meeting } from '@/lib/database/collections/meetings';
 import { addAttendee, Attendee, checkInAttendee, getMeetingAttendees, getAttendeesByFingerprint } from '@/lib/database/collections/attendees';
-import { CheckCircle, User, XCircle, AlertTriangle } from 'lucide-react';
+import { CheckCircle, User, XCircle, AlertTriangle, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { load } from '@fingerprintjs/fingerprintjs';
+import { collectCheckInMetadata, DeviceInfo, LocationInfo } from '@/lib/location/client';
 
 interface CheckInViewProps {
     meetingId: string;
 }
-
-
 
 export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {  
   const [meeting, setMeeting] = useState<Meeting | null>(null);
@@ -22,6 +21,10 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
   const [fingerprintId, setFingerprintId] = useState<string | null>(null);
   const [fingerprintLoading, setFingerprintLoading] = useState(true);
+  const [deviceCheckInLoading, setDeviceCheckInLoading] = useState(false);
+  const [locationGranted, setLocationGranted] = useState<boolean | null>(null);
+  const [locationInfo, setLocationInfo] = useState<LocationInfo>(null);
+  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -34,26 +37,35 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
     email: '',
   });
   
-  // Get device fingerprint on component mount
+  // Get device fingerprint and location info on component mount
   useEffect(() => {
-    async function getFingerprint() {
+    async function initializeCheckIn() {
       try {
         setFingerprintLoading(true);
-        // Load the FingerprintJS agent
-        const fpAgent = await load();
-        // Get the visitor identifier
-        const result = await fpAgent.get();
         
-        // Set the fingerprint ID
+        // Collect metadata (fingerprint, location, etc.)
+        const metadata = await collectCheckInMetadata();
+        
+        // Get fingerprint ID separately for device restriction check
+        const fpAgent = await load();
+        const result = await fpAgent.get();
         setFingerprintId(result.visitorId);
+        
+        // Save metadata for display and future use
+        setLocationInfo(metadata.locationInfo);
+        setDeviceInfo(metadata.deviceInfo);
+        
+        // Check if location was granted
+        setLocationGranted(!!metadata.locationInfo?.latitude);
+        
       } catch (err) {
-        console.error('Error generating fingerprint:', err);
+        console.error('Error during check-in initialization:', err);
       } finally {
         setFingerprintLoading(false);
       }
     }
     
-    getFingerprint();
+    initializeCheckIn();
   }, []);
   
   // Load meeting data
@@ -83,7 +95,13 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
   useEffect(() => {
     async function checkDeviceCheckIn() {
       if (!fingerprintId || !meetingId) return;
-      
+
+      if (!locationGranted) {
+        setError('Location access is required for check-in. Please enable location services and try again.');
+        return;
+      }
+
+      setDeviceCheckInLoading(true);
       try {
         // Check for attendees who checked in with this fingerprint
         const existingCheckIns = await getAttendeesByFingerprint(meetingId, fingerprintId);
@@ -94,12 +112,15 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
       } catch (err) {
         console.error('Error checking device check-in status:', err);
       }
+      finally {
+        setDeviceCheckInLoading(false);
+      }
     }
     
     if (!fingerprintLoading && fingerprintId) {
       checkDeviceCheckIn();
     }
-  }, [fingerprintId, meetingId, fingerprintLoading]);
+  }, [fingerprintId, meetingId, fingerprintLoading, locationGranted]);
   
   // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
@@ -107,6 +128,11 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
     
     if (!fingerprintId) {
       setError("Unable to generate a device fingerprint. Please try again or use a different device.");
+      return;
+    }
+
+    if (!locationGranted) {
+      setError('Location access is required for check-in. Please enable location services and try again.');
       return;
     }
     
@@ -149,10 +175,10 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
           return;
         }
         
-        // Otherwise, check them in with fingerprint ID
-        await checkInAttendee(existingAttendee.id, true, fingerprintId);
+        // Otherwise, check them in with fingerprint and location info
+        await checkInAttendee(existingAttendee.id, true, fingerprintId, {locationInfo, deviceInfo});
       } else {
-        // Add new attendee and check them in with fingerprint ID
+        // Add new attendee and check them in with all metadata
         await addAttendee({
           meeting_id: meetingId,
           name: formData.name,
@@ -160,7 +186,9 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
           department: formData.department || null,
           check_in_time: new Date().toISOString(),
           created_by: 'user_id',
-          fingerprint_id: fingerprintId
+          fingerprint_id: fingerprintId,
+          location_info: locationInfo,
+          device_info: deviceInfo
         });
       }
       
@@ -185,7 +213,7 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
   
-  if ((loading && !meeting) || fingerprintLoading) {
+  if ((loading && !meeting) || fingerprintLoading || deviceCheckInLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-pulse text-center">
@@ -222,7 +250,7 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
               <AlertTriangle className="mx-auto size-12 text-yellow-500" />
               <h3 className="mt-2 text-base/7 font-medium text-gray-900">Already Checked In</h3>
               <p className="mt-1 text-sm/6 text-gray-500">
-                It looks like you have already checked in to this meeting.
+                You have already checked in to this meeting.
               </p>
             </div>
             
@@ -233,9 +261,10 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
                 <p className="mt-1">{meeting.start_time} - {meeting.end_time}</p>
                 <p className="mt-1">{meeting.location}</p>
               </div>
-              
               <div className="mt-6 border-t border-gray-200 pt-4">
-                <p className="text-sm/6 text-gray-500">If you need to check in someone else, please use a different device or browser.</p>
+                <p className="text-sm/6 text-gray-500">
+                  If you need to update your check-in information, please contact the meeting organizer.
+                </p>
               </div>
             </div>
           </div>
@@ -284,6 +313,29 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
                 <p className="mt-1">{meeting.start_time} - {meeting.end_time}</p>
                 <p className="mt-1">{meeting.location}</p>
               </div>
+              
+              {locationInfo && (
+                <div className="mt-4 bg-gray-50 rounded-md p-3">
+                  <div className="flex items-start">
+                    <MapPin className="size-4 text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs font-medium text-gray-900">Check-in details:</p>
+                      <p className="text-xs text-gray-500">
+                        {deviceInfo?.browser} on {deviceInfo?.os} ({deviceInfo?.device})
+                        {locationInfo.ip_address && <span> • IP: {locationInfo.ip_address}</span>}
+                        <br />
+                        {locationInfo.address && (
+                          <>
+                            <span>Location: {locationInfo.address}</span>
+                            <br />
+                          </>
+                        )}
+                        {new Date().toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="mt-6 border-t border-gray-200 pt-4">
                 <p className="text-sm/6 text-gray-500">Thank you for confirming your attendance. Have a great meeting!</p>
@@ -393,7 +445,7 @@ export const CheckInView:FC<CheckInViewProps> = ({ meetingId }) => {
 
                 <div className="pt-2">
                   <p className="text-xs text-gray-500">
-                    Each device can be used for check-in only once per meeting.
+                    Checking in will record your location and device unique information. Please ensure that location services are enabled on your device when prompted.
                   </p>
                 </div>
 
