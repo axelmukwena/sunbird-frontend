@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS attendees (
   department TEXT,
   checked_in BOOLEAN NOT NULL DEFAULT FALSE,
   check_in_time TIMESTAMP WITH TIME ZONE,
+  fingerprint_id TEXT,
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   created_by TEXT NOT NULL,
@@ -44,6 +45,15 @@ CREATE TABLE IF NOT EXISTS attendees (
 
 -- Create index for meeting_id in attendees table
 CREATE INDEX IF NOT EXISTS idx_attendees_meeting_id ON attendees(meeting_id);
+
+-- Create an index for faster queries on fingerprint_id
+CREATE INDEX idx_attendees_fingerprint ON attendees (fingerprint_id);
+
+-- Create a unique constraint to ensure one check-in per fingerprint per meeting
+-- Note: This is optional and depends on your exact requirements
+CREATE UNIQUE INDEX idx_unique_fingerprint_per_meeting 
+ON attendees (meeting_id, fingerprint_id) 
+WHERE fingerprint_id IS NOT NULL;
 
 -- Create RLS (Row Level Security) policies
 -- For a simple demo, we'll allow all operations, but in a real app you'd restrict this

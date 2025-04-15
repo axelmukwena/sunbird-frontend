@@ -68,6 +68,7 @@ export interface Database {
           department: string | null
           check_in_time: string | null
           notes: string | null
+          fingerprint_id: string | null;
           created_at: string
           created_by: string
           updated_at: string
@@ -81,6 +82,7 @@ export interface Database {
           department?: string | null
           check_in_time?: string | null
           notes?: string | null
+          fingerprint_id?: string | null;
           created_by: string
         }
         Update: {
@@ -90,6 +92,7 @@ export interface Database {
           email?: string
           department?: string | null
           check_in_time?: string | null
+          fingerprint_id?: string | null;
           notes?: string | null
           updated_by?: string | null
         }

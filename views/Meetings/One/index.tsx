@@ -20,10 +20,11 @@ import {
   Loader2,
 } from 'lucide-react';
 import { deleteMeeting, getMeetingById, Meeting } from '@/lib/database/collections/meetings';
-import { addAttendee, Attendee, checkInAttendee, getMeetingAttendees, NewAttendee } from '@/lib/database/collections/attendees';
+import { addAttendee, Attendee, checkInAttendee, getAttendeesByFingerprint, getMeetingAttendees, NewAttendee } from '@/lib/database/collections/attendees';
 import MeetingQRCode from '@/components/MeetingQRCode';
 import { useRouter } from 'next/navigation';
 import { exportMeetingData } from '@/utilities/export';
+import { load } from '@fingerprintjs/fingerprintjs';
 
 
 
@@ -52,6 +53,53 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
     const [showAddAttendee, setShowAddAttendee] = useState(false);
     const [newAttendee, setNewAttendee] = useState<NewAttendee>(DEFAULT_ATTENDEE);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
+  const [fingerprintId, setFingerprintId] = useState<string | null>(null);
+  const [fingerprintLoading, setFingerprintLoading] = useState(true);
+
+  // Get device fingerprint on component mount
+  useEffect(() => {
+    async function getFingerprint() {
+      try {
+        setFingerprintLoading(true);
+        // Load the FingerprintJS agent
+        const fpAgent = await load();
+        // Get the visitor identifier
+        const result = await fpAgent.get();
+        
+        // Set the fingerprint ID
+        setFingerprintId(result.visitorId);
+      } catch (err) {
+        console.error('Error generating fingerprint:', err);
+      } finally {
+        setFingerprintLoading(false);
+      }
+    }
+    
+    getFingerprint();
+  }, []);
+
+  // Check if this device has already checked into this meeting
+    useEffect(() => {
+      async function checkDeviceCheckIn() {
+        if (!fingerprintId || !meetingId) return;
+        
+        try {
+          // Check for attendees who checked in with this fingerprint
+          const existingCheckIns = await getAttendeesByFingerprint(meetingId, fingerprintId);
+          
+          if (existingCheckIns.length > 0) {
+            setAlreadyCheckedIn(true);
+          }
+        } catch (err) {
+          console.error('Error checking device check-in status:', err);
+        }
+      }
+      
+      if (!fingerprintLoading && fingerprintId) {
+        checkDeviceCheckIn();
+      }
+    }, [fingerprintId, meetingId, fingerprintLoading]);
     
     // Fetch meeting and attendees data
     useEffect(() => {
@@ -96,56 +144,74 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
     
     // Function to toggle attendee check-in status
     const toggleCheckIn = async (attendeeId: string) => {
-      try {
-        const attendee = attendees.find(a => a.id === attendeeId);
-        if (!attendee) return;
-        
-        const updatedAttendee = await checkInAttendee(attendeeId, !attendee.check_in_time);
-        
-        // Update the attendees list
-        setAttendees(attendees.map(a => 
-          a.id === attendeeId ? updatedAttendee : a
-        ));
-      } catch (err) {
-        console.error('Error toggling check-in status:', err);
-        alert('Failed to update check-in status. Please try again.');
-      }
-    };
+        try {
+          const attendee = attendees.find(a => a.id === attendeeId);
+          if (!attendee) return;
+          
+          if (!attendee.check_in_time && fingerprintId) {
+            // Check if this device has already been used for check-in
+            const existingCheckIns = await getAttendeesByFingerprint(meetingId, fingerprintId);
+            
+            if (existingCheckIns.length > 0) {
+                alert('You have already checked in for this meeting.');
+                return;
+            }
+            
+            // Proceed with check-in including fingerprint
+            const updatedAttendee = await checkInAttendee(attendeeId, true, fingerprintId);
+            
+            // Update the attendees list
+            setAttendees(attendees.map(a => 
+              a.id === attendeeId ? updatedAttendee : a
+            ));
+          } else {
+            // For undo check-in, don't need fingerprint
+            const updatedAttendee = await checkInAttendee(attendeeId, !attendee.check_in_time);
+            
+            // Update the attendees list
+            setAttendees(attendees.map(a => 
+              a.id === attendeeId ? updatedAttendee : a
+            ));
+          }
+        } catch (err) {
+          console.error('Error toggling check-in status:', err);
+          alert('Failed to update check-in status. Please try again.');
+        }
+      };
     
-    // Function to add a new attendee
-    const handleAddAttendee = async () => {
-      if (!meetingId) {
-        alert('Meeting ID is required to add an attendee.');
-        return;
-      }
-
-      if (!newAttendee.name || !newAttendee.email) {
-        alert('Name and email are required fields.');
-        return;
-      }
-      
-      try {
-        const addedAttendee = await addAttendee({
-          meeting_id: meetingId,
-          name: newAttendee.name,
-          email: newAttendee.email,
-          department: newAttendee.department || null,
-          notes: newAttendee.notes || null,
-          created_by: 'user_id', // Replace with actual user ID
-        });
+      const handleAddAttendee = async () => {
+        if (!meetingId) {
+          alert('Meeting ID is required to add an attendee.');
+          return;
+        }
+  
+        if (!newAttendee.name || !newAttendee.email) {
+          alert('Name and email are required fields.');
+          return;
+        }
         
-        // Update the attendees list
-        setAttendees([...attendees, addedAttendee]);
-        
-        // Reset the form
-        setNewAttendee(DEFAULT_ATTENDEE);
-        
-        setShowAddAttendee(false);
-      } catch (err) {
-        console.error('Error adding attendee:', err);
-        alert('Failed to add attendee. Please try again.');
-      }
-    };
+        try {
+          // Check if fingerprint exists and add it to attendee data
+          const attendeeData: NewAttendee = {
+            ...newAttendee,
+            meeting_id: meetingId,
+            created_by: 'user_id',
+          };
+          
+          const addedAttendee = await addAttendee(attendeeData);
+          
+          // Update the attendees list
+          setAttendees([...attendees, addedAttendee]);
+          
+          // Reset the form
+          setNewAttendee(DEFAULT_ATTENDEE);
+          
+          setShowAddAttendee(false);
+        } catch (err) {
+          console.error('Error adding attendee:', err);
+          alert('Failed to add attendee. Please try again.');
+        }
+      };
 
     const handleDelete = async (): Promise<void> => {
         if (!meeting) return;

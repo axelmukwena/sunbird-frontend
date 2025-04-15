@@ -92,13 +92,62 @@ export async function deleteAttendee(id: string) {
   return true;
 }
 
-// Check in an attendee
-export async function checkInAttendee(id: string, checkedIn: boolean = true) {
+// Update checkInAttendee function to accept fingerprint ID
+export async function checkInAttendee(
+  id: string, 
+  checkIn: boolean = true,
+  fingerprintId: string | null = null
+): Promise<Attendee> {
   const updates: UpdateAttendee = {
-    check_in_time: checkedIn ? new Date().toISOString() : null,
   };
+  
+  if (checkIn) {
+    updates.check_in_time = new Date().toISOString();
+    
+    if (fingerprintId) {
+      updates.fingerprint_id = fingerprintId;
+    }
+  } else {
+    updates.check_in_time = null;
+    updates.fingerprint_id = null;
+  }
 
-  return updateAttendee(id, updates);
+  const { data, error } = await supabaseClient
+    .from('attendees')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(`Error updating attendee with ID ${id}:`, error);
+    throw error;
+  }
+
+  return data;
+}
+
+// Add a function to get attendees with the same fingerprint
+export async function getAttendeesByFingerprint(
+  meeting_id: string,
+  fingerprintId: string
+): Promise<Attendee[]> {
+  if (!fingerprintId) {
+    return [];
+  }
+  
+  const { data, error } = await supabaseClient
+    .from('attendees')
+    .select('*')
+    .eq('meeting_id', meeting_id)
+    .eq('fingerprint_id', fingerprintId);
+
+  if (error) {
+    console.error('Error fetching attendees by fingerprint:', error);
+    throw error;
+  }
+
+  return data || [];
 }
 
 // Bulk add attendees to a meeting
