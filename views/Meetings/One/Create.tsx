@@ -381,7 +381,7 @@ export default function CreateMeetingView(): JSX.Element {
               © 2025 Meetcheck. All rights reserved.
             </p>
             <p className="text-sm text-gray-500">
-                Built with ❤️ by <Link className='underline' target='_blank' href="https://www.linkedin.com/in/axelmukwena">Axel Mukwena</Link> at <Link className='underline' target='_blank' href="https://meyabase.com">meyabase.com</Link>
+                Built with ❤️ by <Link className='underline' target='_blank' href="https://meyabase.com">meyabase.com</Link>
             </p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Help</a>

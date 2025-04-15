@@ -17,11 +17,14 @@ import {
   FileDown,
   X,
   Video,
+  Loader2,
 } from 'lucide-react';
 import { deleteMeeting, getMeetingById, Meeting } from '@/lib/database/collections/meetings';
 import { addAttendee, Attendee, checkInAttendee, getMeetingAttendees, NewAttendee } from '@/lib/database/collections/attendees';
 import MeetingQRCode from '@/components/MeetingQRCode';
 import { useRouter } from 'next/navigation';
+import { exportMeetingData } from '@/utilities/export';
+
 
 
 const DEFAULT_ATTENDEE: NewAttendee = {
@@ -44,6 +47,7 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
     const [attendees, setAttendees] = useState<Attendee[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [exporting, setExporting] = useState(false);
     
     const [showAddAttendee, setShowAddAttendee] = useState(false);
     const [newAttendee, setNewAttendee] = useState<NewAttendee>(DEFAULT_ATTENDEE);
@@ -71,6 +75,24 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
       
       fetchData();
     }, [meetingId]);
+    
+    // Function to handle exporting meeting data
+    const handleExportData = async () => {
+      if (!meeting) return;
+      
+      try {
+        setExporting(true);
+        
+        // Export the meeting data using the utility function
+        exportMeetingData(meeting, attendees);
+        
+      } catch (err) {
+        console.error('Error exporting meeting data:', err);
+        alert('Failed to export meeting data. Please try again.');
+      } finally {
+        setExporting(false);
+      }
+    };
     
     // Function to toggle attendee check-in status
     const toggleCheckIn = async (attendeeId: string) => {
@@ -330,10 +352,21 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
                 View Analytics
               </button>
               <button
-                className="inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 bg-white shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+                onClick={handleExportData}
+                disabled={exporting}
+                className="inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 bg-white shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <FileDown className="size-4 mr-1" />
-                Export Data
+                {exporting ? (
+                  <>
+                    <Loader2 className="size-4 mr-1 animate-spin" />
+                    Exporting...
+                  </>
+                ) : (
+                  <>
+                    <FileDown className="size-4 mr-1" />
+                    Export Data
+                  </>
+                )}
               </button>
             </div>
             
@@ -593,14 +626,14 @@ export const MeetingView:FC<MeetingViewProps> = ({meetingId}) => {
           </div>
         </main>
         {/* Footer */}
-        <footer className="bg-white border-t border-gray-100 mt-12">
+        <footer className="bg-white border-t border-gray-100 mt-auto">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <p className="text-sm text-gray-500">
                 © 2025 Meetcheck. All rights reserved.
                 </p>
                 <p className="text-sm text-gray-500">
-                    Built with ❤️ by <Link className='underline' target='_blank' href="https://www.linkedin.com/in/axelmukwena">Axel Mukwena</Link> at <Link className='underline' target='_blank' href="https://meyabase.com">meyabase.com</Link>
+                    Built with ❤️ by <Link className='underline' target='_blank' href="https://meyabase.com">meyabase.com</Link>
                 </p>
                 <div className="flex space-x-4 mt-4 md:mt-0">
                 <a href="#" className="text-sm text-gray-500 hover:text-gray-700">Help</a>
