@@ -1,0 +1,15 @@
+changelog:
+  categories:
+    - title: Breaking Changes ☠️
+      labels:
+        - breaking-change
+    - title: Major Features 🥳
+      labels:
+        - major-feature
+    - title: Minor Features 😏
+      labels:
+        - minor-feature
+    - title: Bug Fixes 🪳
+      labels:
+        - fix
+        - hotfix

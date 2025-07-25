@@ -1,8 +1,9 @@
-import { HomeView } from "@/views/Home";
+import { FC } from "react";
 
+import { HomeView } from "@/views/home";
 
-export default function HomePage() {
-  return (
-    <HomeView />
-  );
-}
+const HomePage: FC = () => {
+  return <HomeView />;
+};
+
+export default HomePage;
