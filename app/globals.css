@@ -189,3 +189,7 @@
   background-color: var(--color-accent) !important;
   color: var(--color-accent-foreground) !important;
 }
+
+[data-radix-popper-content-wrapper] {
+  z-index: 10 !important;
+}

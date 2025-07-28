@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useDebounce } from "@/hooks/utilities/use-debounce";
+import { useDebounce } from "@/hooks/utilities/debounce";
 import { SelectOptionType } from "@/types/general";
 
 import { EntityBadges } from "../badges";

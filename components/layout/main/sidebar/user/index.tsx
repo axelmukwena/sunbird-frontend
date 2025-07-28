@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Settings, Shield } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
 import { FC, useMemo } from "react";
 
@@ -21,7 +21,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useCurrentUserContext } from "@/providers/current-user";
-import { IconType } from "@/types/general";
 import { PROFILE_DROPDOWN_MENU_ITEMS } from "@/utilities/constants/general";
 import { stringToBackgroundColor } from "@/utilities/helpers/colors";
 import { getInitials } from "@/utilities/helpers/text";
@@ -38,13 +37,6 @@ export const NavUser: FC = () => {
     }
     return "bg-gray-400/60";
   }, [initials, currentUser?.avatar_url]);
-
-  const getIcon = (path: string): IconType => {
-    if (path.includes("account") && !path.includes("reset")) return Settings;
-    if (path.includes("reset")) return Shield;
-    if (path.includes("signout")) return LogOut;
-    return Settings;
-  };
 
   if (!currentUser) {
     return null;
@@ -105,12 +97,11 @@ export const NavUser: FC = () => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {PROFILE_DROPDOWN_MENU_ITEMS.map((item) => {
-                const Icon = getIcon(item.path || "");
                 return (
-                  <DropdownMenuItem key={item.name} asChild>
-                    <Link href={item.path || ""} className="cursor-pointer">
-                      <Icon className="mr-2 h-4 w-4" />
-                      {item.name}
+                  <DropdownMenuItem key={item.title} asChild>
+                    <Link href={item.pathname || ""} className="cursor-pointer">
+                      <item.icon className="mr-2 h-4 w-4" />
+                      {item.title}
                     </Link>
                   </DropdownMenuItem>
                 );

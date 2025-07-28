@@ -20,7 +20,7 @@ export const MONEY_OPTIONAL_FORM_SCHEMA = z
       }, "Monetary values should be in the format of money: 0.00")
       .nullable(),
   )
-  .optional();
+  .nullable();
 
 export const MONEY_REQUIRED_FORM_SCHEMA = z
   .union([z.string(), z.number()])
@@ -59,7 +59,7 @@ export const CURRENCY_CODE_REQUIRED_FORM_SCHEMA = z
 
 export const CURRENCY_CODE_OPTIONAL_FORM_SCHEMA = z
   .string()
-  .optional()
+  .nullable()
   .refine(
     (value) => !value || value.length === 3,
     "Currency code must be 3 characters long",

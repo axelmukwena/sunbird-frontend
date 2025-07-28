@@ -1,7 +1,10 @@
-export enum ClientPublicPathname {
+export enum ClientLoggedOutPathname {
   LOGIN = "/login",
   SIGNUP = "/signup",
   FORGOT_PASSWORD = "/forgot-password",
+}
+
+export enum ClientPublicPathname {
   FLOW = "/flow",
 }
 
@@ -11,12 +14,14 @@ export enum ClientOrganisationPathname {
   MEETINGS = "/meetings",
   ATTENDEES = "/attendees",
   ORGANISATION_SETTINGS = "/settings/organisation",
+  ORGANISATION_SETTINGS_NEW = "/settings/organisation/new",
   ORGANISATION_SETTINGS_MEMBERSHIPS = "/settings/organisation/memberships",
   ORGANISATION_SETTINGS_BILLING = "/settings/organisation/billing",
 }
 
 export enum ClientUserAccountPathname {
   LOGOUT = "/logout",
+  ATTENDANCES = "/attendances",
   ACCOUNT_SETTINGS = "/settings/account",
   ACCOUNT_SETTINGS_MEMBERSHIPS = "/settings/account/memberships",
   ACCOUNT_SETTINGS_PERMISSIONS = "/settings/account/permissions",
@@ -26,12 +31,14 @@ export enum ClientUserAccountPathname {
 
 export const ClientPathname = {
   ...ClientPublicPathname,
+  ...ClientLoggedOutPathname,
   ...ClientOrganisationPathname,
   ...ClientUserAccountPathname,
 };
 
 export type ClientPathname =
   | ClientPublicPathname
+  | ClientLoggedOutPathname
   | ClientOrganisationPathname
   | ClientUserAccountPathname;
 

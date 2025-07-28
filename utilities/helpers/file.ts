@@ -1,6 +1,5 @@
-import { Orientation } from "get-orientation/base";
-
-import { MimeType } from "../../api/services/sparrow/types/files";
+import { WeaverMimeType } from "@/api/services/weaver/types/file";
+import { Orientation } from "@/types/general";
 
 /**
  * Creates an HTMLImageElement from a given URL.
@@ -194,7 +193,7 @@ export async function getRotatedImage(
         throw new Error("Canvas is empty");
       }
       resolve(URL.createObjectURL(file));
-    }, MimeType.JPG);
+    }, WeaverMimeType.JPG);
   });
 }
 

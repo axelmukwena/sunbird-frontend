@@ -5,6 +5,13 @@ import { ClientPathname } from "./paths";
 
 export type IconType = LucideIcon;
 
+export type Variant =
+  | "default"
+  | "destructive"
+  | "secondary"
+  | "outline"
+  | null;
+
 export interface SelectOptionType {
   name: string;
   value: string;
@@ -13,7 +20,7 @@ export interface SelectOptionType {
   disabled?: boolean;
   color?: BadgeStatusColor;
   required?: boolean;
-  badgeVariant?: "default" | "destructive" | "outline" | "secondary" | null;
+  badgeVariant?: Variant;
   icon?: IconType | null;
 }
 
@@ -52,7 +59,7 @@ export interface MainMenuItem {
 export interface MenuItem {
   title: string;
   pathname?: ClientPathname;
-  icon?: LucideIcon;
+  icon: LucideIcon;
   items?: MenuItem[];
   requireOrganisation?: boolean;
   showOnlyOnMinimized?: boolean;
@@ -92,3 +99,14 @@ export interface ControllerField {
 }
 
 export type InputValue = string | number | readonly string[] | undefined;
+
+export enum Orientation {
+  TOP_LEFT = 1,
+  TOP_RIGHT = 2,
+  BOTTOM_RIGHT = 3,
+  BOTTOM_LEFT = 4,
+  LEFT_TOP = 5,
+  RIGHT_TOP = 6,
+  RIGHT_BOTTOM = 7,
+  LEFT_BOTTOM = 8,
+}

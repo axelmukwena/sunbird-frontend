@@ -34,7 +34,7 @@ export const LoginView: FC = () => {
             </CardContent>
           </Card>
           <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-            By clicking continue, you agree to our{" "}
+            By clicking Login, you agree to our{" "}
             <a href={ExternalUrl.TERMS_OF_SERVICE}>Terms of Service</a> and{" "}
             <a href={ExternalUrl.PRIVACY_POLICY}>Privacy Policy</a>.
           </div>

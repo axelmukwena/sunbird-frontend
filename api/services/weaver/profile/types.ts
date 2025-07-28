@@ -11,6 +11,9 @@ export enum ApiActionProfile {
   CONFIRM_PASSWORD_RESET = "password/reset/confirm",
   REQUEST_EMAIL_VERIFICATION = "email/verification/request",
   CONFIRM_EMAIL_VERIFICATION = "email/verification/confirm",
+  MY_ATTENDANCES = "attendances",
+  MY_ATTENDANCE = "attendances",
+  MY_ATTENDANCE_STATISTICS = "attendances/statistics",
 }
 
 // Request interfaces
@@ -38,7 +41,7 @@ export interface PasswordResetRequest
 
 export interface PasswordResetConfirmClient {
   email: string;
-  code: number;
+  code: string;
   new_password: string;
 }
 export interface PasswordResetConfirm
@@ -53,7 +56,7 @@ export interface EmailVerificationRequest
     EmailVerificationRequestClient {}
 
 export interface EmailVerificationConfirm {
-  code: number;
+  code: string;
   email: string;
 }
 

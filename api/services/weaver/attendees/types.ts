@@ -1,5 +1,8 @@
-import { CustomFieldType } from "../meetings/types";
+import { ReactNode } from "react";
+
+import { CustomFieldType, MeetingRelationship } from "../meetings/types";
 import { OauthClient } from "../oauth/types";
+import { OrganisationRelationship } from "../organisations/types";
 import {
   BasicApiResponse,
   DatabaseStatus,
@@ -86,7 +89,7 @@ export interface AttendeeCustomFieldResponse {
   customfield_id: string;
   field_name: string;
   field_type: CustomFieldType;
-  value: unknown;
+  value: ReactNode;
 }
 
 export interface AttendeeCheckin {
@@ -107,12 +110,18 @@ export interface AttendeeBase {
   custom_field_responses: AttendeeCustomFieldResponse[] | null;
 }
 
+export interface AttendeeRelatives {
+  organisation: OrganisationRelationship | null;
+  meeting: MeetingRelationship | null;
+}
+
 export interface Attendee
   extends AttendeeForeignKeys,
     AttendeeBase,
     AttendeeStatus,
     AttendeeCheckin,
-    AttendeeFeedback {
+    AttendeeFeedback,
+    AttendeeRelatives {
   id: string;
   created_at: string;
   updated_at: string | null;
@@ -175,6 +184,20 @@ export interface AttendeeParams {
   limit?: number;
 }
 
+export interface AttendeeUserStatisticsQuery {
+  attendance_statuses?: AttendanceStatus[] | null;
+  from_date?: string | null;
+  to_date?: string | null;
+}
+
+export interface AttendeeUserStatistics {
+  user_id: string;
+  meetings_attended_count: number;
+  unique_organisations_count: number;
+  first_attendance_date: string | null;
+  last_attendance_date: string | null;
+}
+
 // API Response types
 export type GetAttendeesResponseApi = Attendee[] | ErrorApiResponse;
 export type GetAttendeeResponseApi = Attendee | ErrorApiResponse;
@@ -188,6 +211,9 @@ export type DeleteAttendeeResponseApi = BasicApiResponse | ErrorApiResponse;
 export type CancelAttendanceResponseApi = Attendee | ErrorApiResponse;
 export type SubmitFeedbackResponseApi = Attendee | ErrorApiResponse;
 export type SubmitGuestFeedbackResponseApi = Attendee | ErrorApiResponse;
+export type GetAttendeeUserStatisticsResponseApi =
+  | AttendeeUserStatistics
+  | ErrorApiResponse;
 
 // Service props
 export interface GetManyFilteredAttendeesProps {
@@ -208,7 +234,7 @@ export interface RegisterAttendeeProps {
 
 export interface GuestCheckinProps {
   organisation_id: string;
-  data: Omit<AttendeeCreate, "client_id" | "client_secret">;
+  data: AttendeeCreate;
 }
 
 export interface GetGuestAttendeeProps {
@@ -220,7 +246,7 @@ export interface GetGuestAttendeeProps {
 export interface UpdateGuestAttendeeProps {
   organisation_id: string;
   device_fingerprint: string;
-  data: Omit<AttendeeUpdate, "client_id" | "client_secret">;
+  data: AttendeeUpdate;
 }
 
 export interface CancelGuestAttendanceProps {
@@ -232,7 +258,7 @@ export interface CancelGuestAttendanceProps {
 export interface UpdateAttendeeProps {
   organisation_id: string;
   id: string;
-  data: Omit<AttendeeUpdate, "client_id" | "client_secret">;
+  data: AttendeeUpdate;
 }
 
 export interface DeleteAttendeeProps {
@@ -248,11 +274,27 @@ export interface CancelAttendanceProps {
 export interface SubmitFeedbackProps {
   organisation_id: string;
   id: string;
-  data: Omit<AttendeeFeedbackCreate, "client_id" | "client_secret">;
+  data: AttendeeFeedbackCreate;
 }
 
 export interface SubmitGuestFeedbackProps {
   organisation_id: string;
   device_fingerprint: string;
-  data: Omit<AttendeeFeedbackCreate, "client_id" | "client_secret">;
+  data: AttendeeFeedbackCreate;
+}
+
+export interface GetAttendeeUsersProps {
+  user_id: string;
+  query: AttendeeQuery;
+  params: AttendeeParams;
+}
+
+export interface GetAttendeeUserProps {
+  user_id: string;
+  attendance_id: string;
+}
+
+export interface GetAttendeeUserStatisticsProps {
+  user_id: string;
+  query: AttendeeUserStatisticsQuery;
 }

@@ -1,6 +1,17 @@
 import { isRequestSuccess, processApiErrorResponse } from "@/api/utilities";
+import { HeaderKey } from "@/utilities/helpers/enums";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
+import {
+  Attendee,
+  AttendeeUserStatistics,
+  GetAttendeeResponseApi,
+  GetAttendeesResponseApi,
+  GetAttendeeUserProps,
+  GetAttendeeUsersProps,
+  GetAttendeeUserStatisticsProps,
+  GetAttendeeUserStatisticsResponseApi,
+} from "../attendees/types";
 import { WeaverApiService } from "../service";
 import { DataServiceResponse } from "../types/general";
 import { User } from "../users/types";
@@ -8,8 +19,6 @@ import {
   ApiActionProfile,
   ChangePasswordProps,
   ChangePasswordResponseApi,
-  EmailVerificationRequestProps,
-  EmailVerificationRequestResponseApi,
   GetProfileProps,
   GetProfileResponseApi,
   SuccessResponse,
@@ -54,6 +63,129 @@ export class ProfileService extends WeaverApiService {
       return {
         success: false,
         message: `Failed to fetch profile. ${message}`,
+        data: null,
+        statuscode: 500,
+      };
+    }
+  }
+
+  /**
+   * Get my attendances
+   * @param {GetAttendeeUsersProps} props - The user ID, query and parameters
+   * @returns {Promise<DataServiceResponse<Attendee[]>>} The attendees response
+   */
+  async getManyAttendeeUsers({
+    user_id,
+    query,
+    params,
+  }: GetAttendeeUsersProps): Promise<DataServiceResponse<Attendee[]>> {
+    try {
+      const res = await this.api.post<GetAttendeesResponseApi>(
+        getProfileApiUrlV1({
+          action: ApiActionProfile.MY_ATTENDANCES,
+          user_id,
+        }),
+        query,
+        { params },
+      );
+
+      if (isRequestSuccess(res.status) && Array.isArray(res.data)) {
+        return {
+          success: true,
+          message: "My attendances fetched successfully",
+          data: res.data,
+          total: Number(res.headers[HeaderKey.X_TOTAL_COUNT]),
+          statuscode: res.status,
+        };
+      }
+      return processApiErrorResponse(res, "Failed to fetch my attendances");
+    } catch (error) {
+      const message = getErrorMessage(error);
+      return {
+        success: false,
+        message: `Failed to fetch my attendances. ${message}`,
+        statuscode: 500,
+      };
+    }
+  }
+
+  /**
+   * Get my attendance
+   * @param {string} user_id - The user ID
+   * @param {string} attendance_id - The attendance ID
+   * @returns {Promise<DataServiceResponse<Attendee | null>>} The attendee response
+   */
+  async getAttendeeUser({
+    user_id,
+    attendance_id,
+  }: GetAttendeeUserProps): Promise<DataServiceResponse<Attendee | null>> {
+    try {
+      const res = await this.api.get<GetAttendeeResponseApi>(
+        getProfileApiUrlV1({
+          action: ApiActionProfile.MY_ATTENDANCE,
+          user_id,
+          attendance_id,
+        }),
+      );
+      if (isRequestSuccess(res.status) && "id" in res.data) {
+        return {
+          success: true,
+          message: "My attendance fetched successfully",
+          data: res.data,
+          statuscode: res.status,
+        };
+      }
+      return processApiErrorResponse(res, "Failed to fetch my attendance");
+    } catch (error) {
+      const message = getErrorMessage(error);
+      return {
+        success: false,
+        message: `Failed to fetch my attendance. ${message}`,
+        data: null,
+        statuscode: 500,
+      };
+    }
+  }
+
+  /**
+   * Get my attendance statistics
+   * @param {GetAttendeeUserStatisticsProps} props - The user ID and query
+   * @returns {Promise<DataServiceResponse<AttendeeUserStatistics | null>>} The statistics response
+   */
+  async getAttendeeUserStatistics({
+    user_id,
+    query,
+  }: GetAttendeeUserStatisticsProps): Promise<
+    DataServiceResponse<AttendeeUserStatistics | null>
+  > {
+    try {
+      const res = await this.api.post<GetAttendeeUserStatisticsResponseApi>(
+        getProfileApiUrlV1({
+          action: ApiActionProfile.MY_ATTENDANCE_STATISTICS,
+          user_id,
+        }),
+        query,
+      );
+      if (
+        isRequestSuccess(res.status) &&
+        "meetings_attended_count" in res.data
+      ) {
+        return {
+          success: true,
+          message: "My attendance statistics fetched successfully",
+          data: res.data,
+          statuscode: res.status,
+        };
+      }
+      return processApiErrorResponse(
+        res,
+        "Failed to fetch my attendance statistics",
+      );
+    } catch (error) {
+      const message = getErrorMessage(error);
+      return {
+        success: false,
+        message: `Failed to fetch my attendance statistics. ${message}`,
         data: null,
         statuscode: 500,
       };
@@ -138,48 +270,6 @@ export class ProfileService extends WeaverApiService {
       return {
         success: false,
         message: `Failed to change password. ${message}`,
-        data: null,
-        statuscode: 500,
-      };
-    }
-  }
-
-  /**
-   * Request email verification
-   * @param {EmailVerificationRequestProps} props - The email verification request data
-   * @returns {Promise<DataServiceResponse<SuccessResponse | null>>} The success response
-   */
-  async requestEmailVerification({
-    data,
-  }: EmailVerificationRequestProps): Promise<
-    DataServiceResponse<SuccessResponse | null>
-  > {
-    try {
-      const res = await this.api.post<EmailVerificationRequestResponseApi>(
-        getProfileApiUrlV1({
-          action: ApiActionProfile.REQUEST_EMAIL_VERIFICATION,
-        }),
-        data,
-      );
-
-      if (isRequestSuccess(res.status) && "success" in res.data) {
-        return {
-          success: true,
-          message: "Email verification request sent successfully",
-          data: res.data,
-          statuscode: res.status,
-        };
-      }
-
-      return processApiErrorResponse(
-        res,
-        "Failed to request email verification",
-      );
-    } catch (error) {
-      const message = getErrorMessage(error);
-      return {
-        success: false,
-        message: `Failed to request email verification. ${message}`,
         data: null,
         statuscode: 500,
       };

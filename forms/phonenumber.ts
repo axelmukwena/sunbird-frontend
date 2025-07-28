@@ -12,7 +12,7 @@ export const PHONE_NUMBER_REQUIRED_SCHEMA = z
 
 export const PHONE_NUMBER_OPTIONAL_SCHEMA = z
   .string()
-  .optional()
+  .nullable()
   .refine(
     (value) => !value?.trim() || isPhoneNumberValid(value),
     "Phone number is in an incorrect E.164 format. E.g, +264 81 603 5678",

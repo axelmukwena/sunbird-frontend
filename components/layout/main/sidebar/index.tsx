@@ -9,7 +9,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useCurrentOrganisation } from "@/hooks/organisation/use-current";
+import { useCurrentOrganisationContext } from "@/providers/current-organisation";
 
 import { NavMain } from "./main";
 import { NavOrganisation } from "./organisation";
@@ -18,7 +18,7 @@ import { NavUser } from "./user";
 export const AppSidebar = ({
   ...props
 }: React.ComponentProps<typeof Sidebar>): React.JSX.Element => {
-  const { currentOrganisation } = useCurrentOrganisation();
+  const { currentOrganisation } = useCurrentOrganisationContext();
 
   return (
     <Sidebar collapsible="icon" {...props}>

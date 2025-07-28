@@ -4,7 +4,7 @@ import React, { createContext, FC, ReactNode, useContext } from "react";
 
 import { CurrentUserContextType } from "@/api/services/weaver/profile/types";
 import { LinearLoader } from "@/components/loaders/linear";
-import { useCurrentUser } from "@/hooks/user/use-current";
+import { useCurrentUser } from "@/hooks/profile/current";
 
 const CurrentUserContext = createContext<CurrentUserContextType | undefined>(
   undefined,

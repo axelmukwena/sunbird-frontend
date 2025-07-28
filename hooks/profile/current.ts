@@ -20,7 +20,7 @@ import {
 } from "@/storage/local/storage";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
-import { useUserCredentials } from "./use-credentials";
+import { useUserCredentials } from "./credentials";
 
 interface GetCurrentUserPermissions {
   organisationIds: string[] | null;
@@ -100,7 +100,7 @@ export const useCurrentUser = (): UseCurrentUser => {
     error: currentUserError,
     isLoading: currentUserLoading,
   } = useSWR(profileSwrUrl, fetcher, {
-    refreshInterval: 1000 * 60,
+    // refreshInterval: 1000 * 60,
   });
 
   const mutateCurrentUser = async (): Promise<void> => {

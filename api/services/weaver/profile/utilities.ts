@@ -3,6 +3,7 @@ import { ApiActionProfile } from "./types";
 interface GetProfileApiUrlV1Params {
   action: ApiActionProfile;
   user_id?: string | null;
+  attendance_id?: string | null;
 }
 
 /**
@@ -13,6 +14,7 @@ interface GetProfileApiUrlV1Params {
 export const getProfileApiUrlV1 = ({
   action,
   user_id,
+  attendance_id,
 }: GetProfileApiUrlV1Params): string => {
   const baseUrl = `/api/v1/profile`;
 
@@ -30,7 +32,33 @@ export const getProfileApiUrlV1 = ({
       return `${baseUrl}/email/verification/request`;
     case ApiActionProfile.CONFIRM_EMAIL_VERIFICATION:
       return `${baseUrl}/email/verification/confirm`;
+    case ApiActionProfile.MY_ATTENDANCES:
+      return `${baseUrl}/${user_id}/attendances`;
+    case ApiActionProfile.MY_ATTENDANCE:
+      return `${baseUrl}/${user_id}/attendances/${attendance_id}`;
+    case ApiActionProfile.MY_ATTENDANCE_STATISTICS:
+      return `${baseUrl}/${user_id}/attendances/statistics`;
     default:
       return baseUrl;
   }
+};
+
+interface GetProfileSwrUrlParams {
+  action: ApiActionProfile;
+  user_id: string;
+  query?: string;
+}
+
+/**
+ * Get the SWR URL for the profile
+ * @param {GetProfileSwrUrlParams} params The parameters to get the SWR URL
+ * @returns {string} The SWR URL
+ */
+export const getProfileSwrUrlV1 = ({
+  action,
+  user_id,
+  query,
+}: GetProfileSwrUrlParams): string => {
+  const baseUrl = getProfileApiUrlV1({ action, user_id });
+  return `${baseUrl}?${query}`;
 };

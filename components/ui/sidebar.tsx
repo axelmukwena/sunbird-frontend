@@ -22,7 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useIsMobile } from "@/hooks/utilities/use-mobile";
+import { useIsMobile } from "@/hooks/utilities/mobile";
 import { BoolString } from "@/types/general";
 import { mergeTailwind } from "@/utilities/helpers/tailwind";
 

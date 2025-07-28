@@ -31,6 +31,7 @@ export enum CustomFieldType {
   SELECT_MULTIPLE = "select_multiple",
   CHECKBOX = "checkbox",
   TEXTAREA = "textarea",
+  MONEY = "money",
   DATE = "date",
   URL = "url",
 }
@@ -163,6 +164,17 @@ export interface Meeting
   creator_id: string | null;
   updator_id: string | null;
   database_status: DatabaseStatus;
+}
+
+export interface MeetingRelationship {
+  id: string;
+  title: string;
+  description: string | null;
+  start_datetime: string;
+  end_datetime: string;
+  timezone: string;
+  address: string | null;
+  coordinates: MeetingLocationCoordinates | null;
 }
 
 // QR Code options

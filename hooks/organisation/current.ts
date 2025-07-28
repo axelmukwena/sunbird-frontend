@@ -11,8 +11,8 @@ import {
 import { getOrganisationApiUrlV1 } from "@/api/services/weaver/organisations/utilities";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
-import { useUserCredentials } from "../user/use-credentials";
-import { useCurrentUser } from "../user/use-current";
+import { useUserCredentials } from "../profile/credentials";
+import { useCurrentUser } from "../profile/current";
 
 /**
  * A hook to get and manage the current organisation.
@@ -39,7 +39,7 @@ export const useCurrentOrganisation = (): UseCurrentOrganisation => {
     error,
     isLoading: organisationLoading,
   } = useSWR(currentOrganisationId ? organisationSwrUrl : null, fetcher, {
-    refreshInterval: 60000,
+    // refreshInterval: 60000,
   });
 
   const mutateCurrentOrganisation = (): void => {

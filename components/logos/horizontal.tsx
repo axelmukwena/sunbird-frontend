@@ -19,7 +19,7 @@ export const LogoHorizontal: FC<LogoHorizontalProps> = ({
   showWord = true,
   gap = 8,
 }) => (
-  <Link href="/">
+  <Link href="/" className="w-fit">
     <div className="flex flex-row items-center justify-start" style={{ gap }}>
       {showMark && <LogoMark width={markWidth} />}
       {showWord && <LogoWord width={wordWidth} />}

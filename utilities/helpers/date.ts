@@ -572,3 +572,10 @@ export function formatSeconds(rawSeconds: unknown): string {
 
 export const millisecondsToDays = (milliseconds: number): number =>
   Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+
+export const getTimeBasedGreeting = (): string => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+};

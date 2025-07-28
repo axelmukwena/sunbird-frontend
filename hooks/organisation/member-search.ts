@@ -13,7 +13,7 @@ import {
 import { getOrganisationSwrUrlV1 } from "@/api/services/weaver/organisations/utilities";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
-import { useUserCredentials } from "../user/use-credentials";
+import { useUserCredentials } from "../profile/credentials";
 
 interface UseOrganisationMemberSearchProps {
   query: OrganisationQuery;

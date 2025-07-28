@@ -21,13 +21,14 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useCurrentOrganisation } from "@/hooks/organisation/use-current";
+import { useCurrentOrganisation } from "@/hooks/organisation/current";
 import { MenuItem } from "@/types/general";
 import { ClientPathname } from "@/types/paths";
 import {
   OVERVIEW_SIDEBAR_MENU_ITEMS,
   SETTINGS_SIDEBAR_MENU_ITEMS,
 } from "@/utilities/constants/general";
+import { isPathActive } from "@/utilities/helpers/path";
 
 interface NavMainProps {}
 
@@ -50,10 +51,9 @@ export const NavMain: FC<NavMainProps> = () => {
 
   const renderMenuItems = (menuItems: MenuItem[]): JSX.Element[] =>
     menuItems.map((item) => {
-      const isActive = item.pathname && pathname.includes(item.pathname);
-      const hasDropdownActive = item.items?.some(
-        (dropdownItem) =>
-          dropdownItem.pathname && pathname.includes(dropdownItem.pathname),
+      const isActive = isPathActive(pathname, item.pathname);
+      const hasDropdownActive = item.items?.some((d) =>
+        isPathActive(pathname, d.pathname),
       );
 
       return (

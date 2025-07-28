@@ -1,9 +1,20 @@
-import { ClientPathname, ClientPublicPathname } from "@/types/paths";
+import {
+  ClientLoggedOutPathname,
+  ClientPathname,
+  ClientPublicPathname,
+} from "@/types/paths";
 
-export const PUBLIC_ROUTES: string[] = [...Object.values(ClientPublicPathname)];
+export const PUBLIC_ROUTES: string[] = [
+  ...Object.values(ClientPublicPathname),
+  ...Object.values(ClientLoggedOutPathname),
+];
+
+export const LOGGED_OUT_PUBLIC_ROUTES: string[] = [
+  ...Object.values(ClientLoggedOutPathname),
+];
 
 export const UNTRACKED_ROUTES: string[] = [
-  ...PUBLIC_ROUTES,
+  ...Object.values(ClientLoggedOutPathname),
   ClientPathname.LOGOUT,
   ClientPathname.ACCOUNT_SETTINGS,
   ClientPathname.ACCOUNT_SETTINGS_VERIFY_EMAIL,

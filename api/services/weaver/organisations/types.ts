@@ -8,16 +8,99 @@ import {
 
 // Enums
 export enum OrganisationIndustry {
-  TECHNOLOGY = "technology",
-  HEALTHCARE = "healthcare",
-  FINANCE = "finance",
-  EDUCATION = "education",
-  RETAIL = "retail",
-  MANUFACTURING = "manufacturing",
-  HOSPITALITY = "hospitality",
-  REAL_ESTATE = "real_estate",
-  CONSULTING = "consulting",
-  OTHER = "other",
+  // Technology
+  INFORMATION_TECHNOLOGY = "Information Technology",
+  SOFTWARE = "Software",
+  HARDWARE = "Hardware",
+  TELECOMMUNICATIONS = "Telecommunications",
+  INTERNET = "Internet",
+
+  // Finance
+  BANKING = "Banking",
+  INSURANCE = "Insurance",
+  FINANCIAL_SERVICES = "Financial Services",
+  ACCOUNTING = "Accounting",
+  VENTURE_CAPITAL = "Venture Capital & Private Equity",
+
+  // Healthcare
+  HOSPITAL_AND_HEALTH_CARE = "Hospital & Health Care",
+  PHARMACEUTICALS = "Pharmaceuticals",
+  MEDICAL_DEVICES = "Medical Devices",
+  BIOTECHNOLOGY = "Biotechnology",
+  MENTAL_HEALTH_CARE = "Mental Health Care",
+
+  // Retail & E-commerce
+  RETAIL = "Retail",
+  ECOMMERCE = "E-commerce",
+  APPAREL_AND_FASHION = "Apparel & Fashion",
+  CONSUMER_GOODS = "Consumer Goods",
+  LUXURY_GOODS_AND_JEWELRY = "Luxury Goods & Jewelry",
+
+  // Manufacturing
+  MANUFACTURING = "Manufacturing",
+  AUTOMOTIVE = "Automotive",
+  AVIATION_AND_AEROSPACE = "Aviation & Aerospace",
+  INDUSTRIAL_AUTOMATION = "Industrial Automation",
+  MACHINERY = "Machinery",
+
+  // Professional Services
+  LEGAL_SERVICES = "Legal Services",
+  MANAGEMENT_CONSULTING = "Management Consulting",
+  MARKETING_AND_ADVERTISING = "Marketing & Advertising",
+  REAL_ESTATE = "Real Estate",
+  STAFFING_AND_RECRUITING = "Staffing & Recruiting",
+
+  // Energy & Utilities
+  OIL_AND_GAS = "Oil & Gas",
+  RENEWABLE_ENERGY = "Renewable Energy",
+  UTILITIES = "Utilities",
+  MINING_AND_METALS = "Mining & Metals",
+
+  // Hospitality & Tourism
+  HOSPITALITY = "Hospitality",
+  RESTAURANTS = "Restaurants",
+  LEISURE_TRAVEL_AND_TOURISM = "Leisure, Travel & Tourism",
+  EVENTS_SERVICES = "Events Services",
+
+  // Education
+  EDUCATION_MANAGEMENT = "Education Management",
+  HIGHER_EDUCATION = "Higher Education",
+  E_LEARNING = "E-learning",
+  PRIMARY_AND_SECONDARY_EDUCATION = "Primary/Secondary Education",
+
+  // Government & Non-Profit
+  GOVERNMENT_ADMINISTRATION = "Government Administration",
+  NON_PROFIT_ORGANIZATION_MANAGEMENT = "Non-Profit Organisation Management",
+  PUBLIC_POLICY = "Public Policy",
+  INTERNATIONAL_AFFAIRS = "International Affairs",
+
+  // Media & Entertainment
+  MEDIA_PRODUCTION = "Media Production",
+  ENTERTAINMENT = "Entertainment",
+  BROADCAST_MEDIA = "Broadcast Media",
+  PUBLISHING = "Publishing",
+  MUSIC = "Music",
+
+  // Construction & Engineering
+  CONSTRUCTION = "Construction",
+  CIVIL_ENGINEERING = "Civil Engineering",
+  ARCHITECTURE_AND_PLANNING = "Architecture & Planning",
+  BUILDING_MATERIALS = "Building Materials",
+
+  // Transportation & Logistics
+  TRANSPORTATION = "Transportation",
+  LOGISTICS_AND_SUPPLY_CHAIN = "Logistics & Supply Chain",
+  MARITIME = "Maritime",
+  AIRLINES_AND_AVIATION = "Airlines/Aviation",
+
+  // Agriculture
+  FARMING = "Farming",
+  AGRIBUSINESS = "Agribusiness",
+  FISHERY = "Fishery",
+  RANCHING = "Ranching",
+
+  // Other
+  OTHER = "Other",
 }
 
 export enum OrganisationSettingsDateFormat {
@@ -65,16 +148,11 @@ export interface WeaverFile {
 }
 
 export interface OrganisationAddress {
-  street: string | null;
-  city: string | null;
-  state: string | null;
-  country_code: string | null;
-  postal_code: string | null;
-}
-
-export interface OrganisationContactInfo {
-  email: string | null;
-  phone_number: string | null;
+  street: string;
+  city: string;
+  state: string;
+  country_code: string;
+  postal_code: string;
 }
 
 export interface OrganisationSettings {
@@ -90,11 +168,12 @@ export interface OrganisationSettings {
 
 export interface OrganisationBase {
   name: string;
-  description: string | null;
-  website_url: string | null;
+  description?: string | null;
+  website_url?: string | null;
+  contact_email?: string | null;
+  contact_phone_number?: string | null;
   industry: OrganisationIndustry;
-  address: OrganisationAddress | null;
-  contact_info: OrganisationContactInfo | null;
+  address?: OrganisationAddress | null;
   settings: OrganisationSettings;
 }
 
@@ -111,19 +190,23 @@ export interface Organisation extends OrganisationBase, OrganisationAvatar {
   database_status: DatabaseStatus;
 }
 
+export interface OrganisationRelationship {
+  id: string;
+  name: string;
+  description: string | null;
+  website_url: string | null;
+  industry: OrganisationIndustry;
+}
+
 // Request interfaces
 export interface OrganisationAddressInput extends OrganisationAddress {}
 
-export interface OrganisationContactInfoInput extends OrganisationContactInfo {}
-
 export interface OrganisationCreate extends OrganisationBase {
   address: OrganisationAddressInput | null;
-  contact_info: OrganisationContactInfoInput | null;
 }
 
 export interface OrganisationUpdate extends OrganisationBase {
   address: OrganisationAddressInput | null;
-  contact_info: OrganisationContactInfoInput | null;
 }
 
 export interface OrganisationDatabaseStatusUpdate {

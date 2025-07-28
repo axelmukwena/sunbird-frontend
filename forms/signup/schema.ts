@@ -15,7 +15,7 @@ export const SIGNUP_FORM_SCHEMA = z.object({
   avatar_url: URL_OPTIONAL_FORM_SCHEMA,
   organisation_name: z.string().optional(),
   occupation: z.string().optional(),
-  language: z.enum(Language).optional().default(Language.ENGLISH),
+  language: z.enum(Language).optional(),
 });
 
 export type SignupFormSchema = z.infer<typeof SIGNUP_FORM_SCHEMA>;

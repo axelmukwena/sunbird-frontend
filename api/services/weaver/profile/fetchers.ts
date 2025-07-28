@@ -1,5 +1,18 @@
+import { HeaderKey } from "@/utilities/helpers/enums";
+import { getErrorMessage } from "@/utilities/helpers/errors";
+
+import {
+  Attendee,
+  AttendeeParams,
+  AttendeeQuery,
+  AttendeeUserStatistics,
+  AttendeeUserStatisticsQuery,
+} from "../attendees/types";
+import { getCsrfToken } from "../oauth/fetchers";
+import { DataServiceResponse } from "../types/general";
 import { User } from "../users/types";
 import { ProfileService } from "./service";
+import { EmailVerificationRequestClient, SuccessResponse } from "./types";
 
 interface GetUserFetcherProps {
   id?: string | null;
@@ -31,4 +44,94 @@ export const currentUserFetcher = async ({
   }
 
   throw new Error(res.message);
+};
+
+interface EmailVerificationRequestProps {
+  data: EmailVerificationRequestClient;
+}
+
+/**
+ * Requests email verification for the current user.
+ * @param {EmailVerificationRequestProps} props The request props.
+ * @returns {Promise<SuccessResponse>} The success response.
+ */
+export const requestEmailVerification = async ({
+  data,
+}: EmailVerificationRequestProps): Promise<SuccessResponse> => {
+  try {
+    const headers = {
+      [HeaderKey.CONTENT_TYPE]: "application/json",
+      [HeaderKey.X_TENDIFLOW_CSRF_TOKEN]: await getCsrfToken(),
+    };
+    const res = await fetch("/api/profile/request-email-verification", {
+      method: "POST",
+      headers,
+      body: JSON.stringify(data),
+    });
+    return await res.json();
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to sign in with Google. ${getErrorMessage(error)}`,
+    };
+  }
+};
+
+interface GetAttendeeUserStatisticsFetcherProps {
+  user_id?: string | null;
+  query: AttendeeUserStatisticsQuery;
+  getIdToken: () => Promise<string>;
+}
+
+/**
+ * Fetches attendee statistics for the current user.
+ * @param {GetAttendeeUserStatisticsFetcherProps} props The fetcher props.
+ * @returns {Promise<AttendeeUserStatistics | null>} The statistics.
+ */
+export const getAttendeeUserStatisticsFetcher = async ({
+  user_id,
+  query,
+  getIdToken,
+}: GetAttendeeUserStatisticsFetcherProps): Promise<AttendeeUserStatistics | null> => {
+  if (!user_id) {
+    return null;
+  }
+  const token = await getIdToken();
+  const profileService = new ProfileService(token);
+  const res = await profileService.getAttendeeUserStatistics({
+    user_id,
+    query,
+  });
+  if (res.success && res.data) {
+    return res.data;
+  }
+  throw new Error(res.message);
+};
+
+interface GetManyAttendeeUserFetcherProps {
+  getIdToken: () => Promise<string>;
+  userId: string;
+  query: AttendeeQuery;
+  params: AttendeeParams;
+}
+
+/**
+ * Fetcher function for attendee user search
+ */
+export const getManyAttendeeUserFetcher = async ({
+  getIdToken,
+  userId,
+  query,
+  params,
+}: GetManyAttendeeUserFetcherProps): Promise<
+  DataServiceResponse<Attendee[]>
+> => {
+  const token = await getIdToken();
+  const profileService = new ProfileService(token);
+  const res = await profileService.getManyAttendeeUsers({
+    user_id: userId,
+    query,
+    params,
+  });
+  return res;
 };
