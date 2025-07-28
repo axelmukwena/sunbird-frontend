@@ -3,7 +3,6 @@ import {
   Coffee,
   Group,
   LogOut,
-  PlusSquare,
   Settings,
   Shield,
   User,
@@ -30,11 +29,11 @@ export const OVERVIEW_SIDEBAR_MENU_ITEMS: MenuItem[] = [
     pathname: ClientPathname.ATTENDANCES,
     icon: UserCheck,
   },
-  {
-    title: "Create Meeting",
-    pathname: ClientPathname.ORGANISATION_SETTINGS_NEW,
-    icon: PlusSquare,
-  },
+  // {
+  //   title: "Create Meeting",
+  //   pathname: ClientPathname.ORGANISATION_SETTINGS_NEW,
+  //   icon: PlusSquare,
+  // },
 
   // Core Asset Management
   {
@@ -59,7 +58,7 @@ export const SETTINGS_SIDEBAR_MENU_ITEMS: MenuItem[] = [
     requireOrganisation: true,
     items: [
       {
-        title: "Settings",
+        title: "Overview",
         icon: Settings,
         pathname: ClientPathname.ORGANISATION_SETTINGS,
       },

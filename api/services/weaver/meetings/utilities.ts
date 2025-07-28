@@ -1,5 +1,12 @@
 import { ApiActionMeeting } from "./types";
 
+interface MeetingUrlBuildingParams {
+  base_url: string;
+  meeting_id?: string | null;
+}
+
+type MeetingUrlBuilder = (params: MeetingUrlBuildingParams) => string;
+
 interface GetMeetingApiUrlV1Params {
   organisation_id: string;
   action: ApiActionMeeting;
@@ -7,37 +14,56 @@ interface GetMeetingApiUrlV1Params {
 }
 
 /**
- * Get the API URL for meeting endpoints
- * @param {GetMeetingApiUrlV1Params} params The parameters to get the API URL
- * @returns {string} The API URL
+ * URL builders for each meeting action type.
+ * Each function takes the necessary parameters and returns the complete URL.
+ */
+const meetingUrlBuilders: Record<ApiActionMeeting, MeetingUrlBuilder> = {
+  // Collection endpoints
+  [ApiActionMeeting.GET_FILTERED]: ({ base_url }) => `${base_url}/filtered`,
+  [ApiActionMeeting.CREATE]: ({ base_url }) => base_url,
+
+  // Individual meeting endpoints
+  [ApiActionMeeting.GET_BY_ID]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}`,
+  [ApiActionMeeting.UPDATE]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}`,
+  [ApiActionMeeting.DELETE]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}`,
+
+  // Meeting-specific operations
+  [ApiActionMeeting.REGENERATE_QRCODE]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}/qrcode/regenerate`,
+  [ApiActionMeeting.UPDATE_DATABASE_STATUS]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}/database-status`,
+  [ApiActionMeeting.GET_RECURRING_SERIES]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}/recurring-series`,
+  [ApiActionMeeting.CHECK_LOCATION]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}/check-location`,
+  [ApiActionMeeting.PUBLIC]: ({ base_url, meeting_id }) =>
+    `${base_url}/${meeting_id}/public`,
+};
+
+/**
+ * Generate the complete API URL for meeting endpoints.
+ *
+ * @param params - The parameters needed to build the URL
+ * @returns The complete API URL for the specified action
+ * @throws Error if the action is not recognized
  */
 export const getMeetingApiUrlV1 = ({
   organisation_id,
   action,
   meeting_id,
 }: GetMeetingApiUrlV1Params): string => {
-  const baseUrl = `/api/v1/organisations/${organisation_id}/meetings`;
+  const base_url = `/api/v1/organisations/${organisation_id}/meetings`;
 
-  switch (action) {
-    case ApiActionMeeting.GET_FILTERED:
-      return `${baseUrl}/filtered`;
-    case ApiActionMeeting.CREATE:
-      return baseUrl;
-    case ApiActionMeeting.REGENERATE_QRCODE:
-      return `${baseUrl}/${meeting_id}/qrcode/regenerate`;
-    case ApiActionMeeting.GET_BY_ID:
-    case ApiActionMeeting.UPDATE:
-    case ApiActionMeeting.DELETE:
-      return `${baseUrl}/${meeting_id}`;
-    case ApiActionMeeting.UPDATE_DATABASE_STATUS:
-      return `${baseUrl}/${meeting_id}/database-status`;
-    case ApiActionMeeting.GET_RECURRING_SERIES:
-      return `${baseUrl}/${meeting_id}/recurring-series`;
-    case ApiActionMeeting.CHECK_LOCATION:
-      return `${baseUrl}/${meeting_id}/check-location`;
-    case ApiActionMeeting.PUBLIC:
-      return `${baseUrl}/${meeting_id}/public`;
-    default:
-      return baseUrl;
+  const urlBuilder = meetingUrlBuilders[action];
+  if (!urlBuilder) {
+    throw new Error(`Unsupported meeting API action: ${action}`);
   }
+
+  return urlBuilder({
+    base_url,
+    meeting_id,
+  });
 };

@@ -39,13 +39,10 @@ export const ProfileAttendeesContent: FC<ProfileAttendeesContentProps> = () => {
     });
 
   const handleSort = (newSortBy: AttendeeSortBy, newOrderBy: OrderBy): void => {
-    // This would update your URL params through the pagination hook
-    // You'll need to implement the actual sorting logic in your pagination hook
     console.log("Sort requested:", { newSortBy, newOrderBy });
   };
 
   const handleRowClick = (attendee: Attendee): void => {
-    // Navigate to attendee detail page or open modal
     console.log("Row clicked:", attendee);
   };
 

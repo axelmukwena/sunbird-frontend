@@ -4,16 +4,23 @@ import { ErrorApiResponse, Language } from "../types/general";
 import { User } from "../users/types";
 
 export enum ApiActionProfile {
-  GET_PROFILE = "",
-  UPDATE_PROFILE = "",
-  CHANGE_PASSWORD = "password",
-  REQUEST_PASSWORD_RESET = "password/reset/request",
-  CONFIRM_PASSWORD_RESET = "password/reset/confirm",
-  REQUEST_EMAIL_VERIFICATION = "email/verification/request",
-  CONFIRM_EMAIL_VERIFICATION = "email/verification/confirm",
-  MY_ATTENDANCES = "attendances",
-  MY_ATTENDANCE = "attendances",
-  MY_ATTENDANCE_STATISTICS = "attendances/statistics",
+  // Profile operations
+  GET_PROFILE = "GET_PROFILE",
+  UPDATE_PROFILE = "UPDATE_PROFILE",
+
+  // Password operations
+  CHANGE_PASSWORD = "CHANGE_PASSWORD",
+  REQUEST_PASSWORD_RESET = "REQUEST_PASSWORD_RESET",
+  CONFIRM_PASSWORD_RESET = "CONFIRM_PASSWORD_RESET",
+
+  // Email verification operations
+  REQUEST_EMAIL_VERIFICATION = "REQUEST_EMAIL_VERIFICATION",
+  CONFIRM_EMAIL_VERIFICATION = "CONFIRM_EMAIL_VERIFICATION",
+
+  // Attendance operations
+  MY_ATTENDANCES = "MY_ATTENDANCES",
+  MY_ATTENDANCE = "MY_ATTENDANCE",
+  MY_ATTENDANCE_STATISTICS = "MY_ATTENDANCE_STATISTICS",
 }
 
 // Request interfaces
@@ -119,7 +126,7 @@ export interface UseCurrentUser {
   currentUser: User | null;
   organisationIds: string[] | null;
   currentOrganisationId: string | null;
-  currentOrganisationPermissions: MembershipPermission[] | null;
+  currentOrganisationPermission: MembershipPermission | null;
   isLoading: boolean;
   error: string;
   mutateCurrentUser: () => void;
@@ -132,5 +139,5 @@ export interface CurrentUserContextType {
   mutateCurrentUser: () => void;
   organisationIds: string[] | null;
   currentOrganisationId: string | null;
-  currentOrganisationPermissions: MembershipPermission[] | null;
+  currentOrganisationPermission: MembershipPermission | null;
 }

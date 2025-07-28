@@ -122,13 +122,19 @@ export enum OrganisationSortBy {
 }
 
 export enum ApiActionOrganisation {
-  GET_FILTERED = "filtered",
-  GET_FILTERED_MEMBER = "filtered-member",
-  CREATE = "",
-  GET_BY_ID = "",
-  UPDATE = "",
-  UPDATE_DATABASE_STATUS = "database-status",
-  DELETE = "",
+  // Collection operations
+  GET_FILTERED = "GET_FILTERED",
+  GET_FILTERED_MEMBER = "GET_FILTERED_MEMBER",
+  GET_STATISTICS = "GET_STATISTICS",
+  CREATE = "CREATE",
+
+  // Individual organisation operations
+  GET_BY_ID = "GET_BY_ID",
+  UPDATE = "UPDATE",
+  DELETE = "DELETE",
+
+  // Organisation-specific operations
+  UPDATE_DATABASE_STATUS = "UPDATE_DATABASE_STATUS",
 }
 
 // Base interfaces
@@ -198,6 +204,13 @@ export interface OrganisationRelationship {
   industry: OrganisationIndustry;
 }
 
+export interface OrganisationStatistics {
+  organisation_id: string;
+  active_meetings_count: number;
+  upcoming_meetings_count: number;
+  unique_attendees_count: number;
+}
+
 // Request interfaces
 export interface OrganisationAddressInput extends OrganisationAddress {}
 
@@ -239,6 +252,9 @@ export type UpdateOrganisationDatabaseStatusResponseApi =
   | Organisation
   | ErrorApiResponse;
 export type DeleteOrganisationResponseApi = BasicApiResponse | ErrorApiResponse;
+export type GetOrganisationStatisticsResponseApi =
+  | OrganisationStatistics
+  | ErrorApiResponse;
 
 // Service props
 export interface GetManyFilteredOrganisationsProps {
@@ -268,11 +284,16 @@ export interface DeleteOrganisationProps {
   id: string;
 }
 
+export interface GetOrganisationStatisticsProps {
+  id: string;
+}
+
 // Hook interfaces
 export interface UseCurrentOrganisation {
   currentOrganisation: Organisation | null;
   isLoading: boolean;
   error: string;
+  setCurrentOrganisation: (id: string | null) => void;
   mutateCurrentOrganisation: () => void;
 }
 
@@ -280,6 +301,7 @@ export interface CurrentOrganisationContextType {
   currentOrganisation: Organisation | null;
   isLoading: boolean;
   error: string | null;
+  setCurrentOrganisation: (id: string | null) => void;
   mutateCurrentOrganisation: () => void;
 }
 
@@ -290,6 +312,16 @@ export interface UseOrganisations {
   handleMutateOrganisations: () => void;
 }
 
+export interface UseOrganisationStatistics {
+  statistics: OrganisationStatistics | null;
+  isLoading: boolean;
+  error: string;
+  handleMutateStatistics: () => void;
+}
+
 export type OrganisationsManyResponse = DataServiceResponse<
   Organisation[] | null
 > | null;
+
+export type OrganisationStatisticsResponse =
+  DataServiceResponse<OrganisationStatistics | null> | null;

@@ -2,6 +2,7 @@
 
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FC } from "react";
 
 import { Organisation } from "@/api/services/weaver/organisations/types";
@@ -16,8 +17,19 @@ interface NavOrganisationProps {
 export const NavOrganisationItem: FC<NavOrganisationProps> = ({
   organisation,
 }) => {
-  const { currentOrganisation } = useCurrentOrganisationContext();
+  const router = useRouter();
+  const { currentOrganisation, setCurrentOrganisation } =
+    useCurrentOrganisationContext();
   const isSelected = currentOrganisation?.id === organisation.id;
+
+  const handleSelectOrganisation = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+  ): void => {
+    e.preventDefault();
+    setCurrentOrganisation(organisation.id);
+    router.refresh();
+  };
+
   return (
     <DropdownMenuItem
       key={organisation.id}
@@ -27,6 +39,7 @@ export const NavOrganisationItem: FC<NavOrganisationProps> = ({
       <Link
         className="flex items-center gap-3 w-full"
         href={`${ClientPathname.ORGANISATIONS}/${organisation.id}`}
+        onClick={handleSelectOrganisation}
       >
         <div className="flex-1 min-w-0">
           <div className="text-sm font-medium truncate">

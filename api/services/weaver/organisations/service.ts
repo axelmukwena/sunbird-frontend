@@ -14,7 +14,10 @@ import {
   GetManyFilteredOrganisationsProps,
   GetOrganisationResponseApi,
   GetOrganisationsResponseApi,
+  GetOrganisationStatisticsProps,
+  GetOrganisationStatisticsResponseApi,
   Organisation,
+  OrganisationStatistics,
   UpdateOrganisationDatabaseStatusProps,
   UpdateOrganisationDatabaseStatusResponseApi,
   UpdateOrganisationProps,
@@ -108,6 +111,45 @@ export class OrganisationService extends WeaverApiService {
   }
 
   /**
+   * Get organisation statistics
+   * @param {GetOrganisationStatisticsProps} props - The organisation ID
+   * @returns {Promise<DataServiceResponse<OrganisationStatistics>>} The organisation statistics response
+   */
+  async getStatistics({
+    id,
+  }: GetOrganisationStatisticsProps): Promise<
+    DataServiceResponse<OrganisationStatistics>
+  > {
+    try {
+      const res = await this.api.get<GetOrganisationStatisticsResponseApi>(
+        getOrganisationApiUrlV1({
+          organisation_id: id,
+          action: ApiActionOrganisation.GET_STATISTICS,
+        }),
+      );
+      if (isRequestSuccess(res.status) && "active_meetings_count" in res.data) {
+        return {
+          success: true,
+          message: "Organisation statistics fetched successfully",
+          data: res.data,
+          statuscode: res.status,
+        };
+      }
+      return processApiErrorResponse(
+        res,
+        "Failed to fetch organisation statistics",
+      );
+    } catch (error) {
+      const message = getErrorMessage(error);
+      return {
+        success: false,
+        message: `Failed to fetch organisation statistics. ${message}`,
+        statuscode: 500,
+      };
+    }
+  }
+
+  /**
    * Create a new organisation
    * @param {CreateOrganisationProps} props - The organisation creation data
    * @returns {Promise<DataServiceResponse<Organisation | null>>} The organisation response
@@ -161,7 +203,7 @@ export class OrganisationService extends WeaverApiService {
     try {
       const res = await this.api.get<GetOrganisationResponseApi>(
         getOrganisationApiUrlV1({
-          id,
+          organisation_id: id,
           action: ApiActionOrganisation.GET_BY_ID,
         }),
       );
@@ -204,7 +246,10 @@ export class OrganisationService extends WeaverApiService {
   > {
     try {
       const res = await this.api.put<UpdateOrganisationResponseApi>(
-        getOrganisationApiUrlV1({ id, action: ApiActionOrganisation.UPDATE }),
+        getOrganisationApiUrlV1({
+          organisation_id: id,
+          action: ApiActionOrganisation.UPDATE,
+        }),
         data,
       );
 
@@ -248,7 +293,7 @@ export class OrganisationService extends WeaverApiService {
       const res =
         await this.api.put<UpdateOrganisationDatabaseStatusResponseApi>(
           getOrganisationApiUrlV1({
-            id,
+            organisation_id: id,
             action: ApiActionOrganisation.UPDATE_DATABASE_STATUS,
           }),
           data,
@@ -292,7 +337,10 @@ export class OrganisationService extends WeaverApiService {
   }: DeleteOrganisationProps): Promise<DataServiceResponse<BasicApiResponse>> {
     try {
       const res = await this.api.delete<DeleteOrganisationResponseApi>(
-        getOrganisationApiUrlV1({ id, action: ApiActionOrganisation.DELETE }),
+        getOrganisationApiUrlV1({
+          organisation_id: id,
+          action: ApiActionOrganisation.DELETE,
+        }),
       );
 
       if (isRequestSuccess(res.status)) {

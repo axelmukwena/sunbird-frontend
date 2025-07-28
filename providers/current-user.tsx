@@ -24,7 +24,7 @@ export const CurrentUserProvider: FC<CurrentUserProviderProps> = ({
     mutateCurrentUser,
     organisationIds,
     currentOrganisationId,
-    currentOrganisationPermissions,
+    currentOrganisationPermission,
   } = useCurrentUser();
 
   // Show loader while fetching current user data
@@ -39,7 +39,7 @@ export const CurrentUserProvider: FC<CurrentUserProviderProps> = ({
     mutateCurrentUser,
     organisationIds,
     currentOrganisationId,
-    currentOrganisationPermissions,
+    currentOrganisationPermission,
   };
 
   return (

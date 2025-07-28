@@ -24,6 +24,7 @@ import { useOrganisationMemberSearch } from "@/hooks/organisation/member-search"
 import { useCurrentOrganisationContext } from "@/providers/current-organisation";
 import { useCurrentUserContext } from "@/providers/current-user";
 import { ClientPathname } from "@/types/paths";
+import { CreateOrganisation } from "@/views/organisations/one/create";
 
 import { NavOrganisationItem } from "./OrganisationItem";
 
@@ -106,7 +107,7 @@ export const NavOrganisation: FC = () => {
               </ScrollArea>
             )}
             <DropdownMenuSeparator />
-            <CreateOrganisationModal />
+            <CreateOrganisation />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

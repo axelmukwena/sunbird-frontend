@@ -212,8 +212,8 @@ export const OrganisationForm: FC<OrganisationFormProps> = ({
                   field={field}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
-                  label="State/Province"
-                  placeholder="NY"
+                  label="State/Region"
+                  placeholder="Khomas"
                   disabled={!isActiveForm}
                 />
               )}
@@ -241,7 +241,7 @@ export const OrganisationForm: FC<OrganisationFormProps> = ({
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   label="Postal Code"
-                  placeholder="10001"
+                  placeholder="9000"
                   disabled={!isActiveForm}
                 />
               )}

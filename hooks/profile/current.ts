@@ -25,7 +25,7 @@ import { useUserCredentials } from "./credentials";
 interface GetCurrentUserPermissions {
   organisationIds: string[] | null;
   currentOrganisationId: string | null;
-  permissions: MembershipPermission[] | null;
+  permission: MembershipPermission | null;
 }
 
 /**
@@ -38,7 +38,7 @@ const getCurrentUserPermissions = (
     return {
       organisationIds: null,
       currentOrganisationId: null,
-      permissions: null,
+      permission: null,
     };
   }
 
@@ -64,20 +64,20 @@ const getCurrentUserPermissions = (
   }
 
   // Get permissions for specific organisation if provided
-  let permissions: MembershipPermission[] = [];
+  let permission: MembershipPermission | null = null;
   if (currentOrganisationId) {
     const membership = user.memberships.find(
       (m) =>
         m.organisation_id === currentOrganisationId &&
         m.status === MembershipStatus.ACTIVE,
     );
-    permissions = membership?.permissions || [];
+    permission = membership?.permission || null;
   }
 
   return {
     organisationIds,
     currentOrganisationId,
-    permissions,
+    permission,
   };
 };
 
@@ -107,7 +107,7 @@ export const useCurrentUser = (): UseCurrentUser => {
     mutate(profileSwrUrl);
   };
 
-  const { organisationIds, currentOrganisationId, permissions } =
+  const { organisationIds, currentOrganisationId, permission } =
     getCurrentUserPermissions(currentUser);
 
   const isLoading =
@@ -120,6 +120,6 @@ export const useCurrentUser = (): UseCurrentUser => {
     mutateCurrentUser,
     organisationIds,
     currentOrganisationId,
-    currentOrganisationPermissions: permissions,
+    currentOrganisationPermission: permission,
   };
 };

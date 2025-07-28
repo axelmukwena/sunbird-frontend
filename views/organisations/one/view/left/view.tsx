@@ -91,7 +91,6 @@ export const OrganisationContentView: FC<OrganisationContentViewProps> = ({
       <DataDisplayContainer
         title="Organisation Details"
         description="Basic information about the organisation"
-        columns={2}
         className="mb-8"
       >
         <TextDisplayRow
@@ -168,7 +167,6 @@ export const OrganisationContentView: FC<OrganisationContentViewProps> = ({
       <DataDisplayContainer
         title="Settings & Preferences"
         description="Organisation-specific configurations and preferences"
-        columns={2}
         className="mb-8"
       >
         <TextDisplayRow
@@ -253,7 +251,6 @@ export const OrganisationContentView: FC<OrganisationContentViewProps> = ({
       <DataDisplayContainer
         title="Metadata"
         description="Creation and modification information"
-        columns={2}
       >
         <DateDisplayRow
           label="Created"

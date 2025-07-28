@@ -17,8 +17,8 @@ import {
   Membership,
   RespondToInvitationProps,
   RespondToInvitationResponseApi,
-  UpdateMembershipPermissionsProps,
-  UpdateMembershipPermissionsResponseApi,
+  UpdateMembershipPermissionProps,
+  UpdateMembershipPermissionResponseApi,
   UpdateMembershipStatusProps,
   UpdateMembershipStatusResponseApi,
 } from "./types";
@@ -172,7 +172,7 @@ export class MembershipService extends WeaverApiService {
       const res = await this.api.get<GetMembershipResponseApi>(
         getMembershipApiUrlV1({
           organisation_id,
-          id,
+          membership_id: id,
           action: ApiActionMembership.GET_BY_ID,
         }),
       );
@@ -203,23 +203,23 @@ export class MembershipService extends WeaverApiService {
   }
 
   /**
-   * Update membership permissions
-   * @param {UpdateMembershipPermissionsProps} props - The membership permissions update data
+   * Update membership permission
+   * @param {UpdateMembershipPermissionProps} props - The membership permission update data
    * @returns {Promise<DataServiceResponse<Membership | null>>} The membership response
    */
-  async updatePermissions({
+  async updatePermission({
     organisation_id,
     id,
     data,
-  }: UpdateMembershipPermissionsProps): Promise<
+  }: UpdateMembershipPermissionProps): Promise<
     DataServiceResponse<Membership | null>
   > {
     try {
-      const res = await this.api.put<UpdateMembershipPermissionsResponseApi>(
+      const res = await this.api.put<UpdateMembershipPermissionResponseApi>(
         getMembershipApiUrlV1({
           organisation_id,
-          id,
-          action: ApiActionMembership.UPDATE_PERMISSIONS,
+          membership_id: id,
+          action: ApiActionMembership.UPDATE_PERMISSION,
         }),
         data,
       );
@@ -231,7 +231,7 @@ export class MembershipService extends WeaverApiService {
       ) {
         return {
           success: true,
-          message: "Membership permissions updated successfully",
+          message: "Membership permission updated successfully",
           data: res.data,
           statuscode: res.status,
         };
@@ -239,13 +239,13 @@ export class MembershipService extends WeaverApiService {
 
       return processApiErrorResponse(
         res,
-        "Failed to update membership permissions",
+        "Failed to update membership permission",
       );
     } catch (error) {
       const message = getErrorMessage(error);
       return {
         success: false,
-        message: `Failed to update membership permissions. ${message}`,
+        message: `Failed to update membership permission. ${message}`,
         data: null,
         statuscode: 500,
       };
@@ -268,7 +268,7 @@ export class MembershipService extends WeaverApiService {
       const res = await this.api.put<UpdateMembershipStatusResponseApi>(
         getMembershipApiUrlV1({
           organisation_id,
-          id,
+          membership_id: id,
           action: ApiActionMembership.UPDATE_STATUS,
         }),
         data,
@@ -312,7 +312,7 @@ export class MembershipService extends WeaverApiService {
       const res = await this.api.delete<DeleteMembershipResponseApi>(
         getMembershipApiUrlV1({
           organisation_id,
-          id,
+          membership_id: id,
           action: ApiActionMembership.DELETE,
         }),
       );

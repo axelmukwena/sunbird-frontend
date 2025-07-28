@@ -5,7 +5,6 @@ interface DataDisplayContainerProps {
   description?: string;
   children: ReactNode;
   className?: string;
-  columns?: 1 | 2 | 3;
 }
 
 export const DataDisplayContainer: FC<DataDisplayContainerProps> = ({
@@ -13,19 +12,7 @@ export const DataDisplayContainer: FC<DataDisplayContainerProps> = ({
   description,
   children,
   className = "",
-  columns = 1,
 }) => {
-  const getGridClass = (): string => {
-    switch (columns) {
-      case 2:
-        return "grid grid-cols-1 md:grid-cols-2 gap-x-6";
-      case 3:
-        return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6";
-      default:
-        return "";
-    }
-  };
-
   return (
     <div className={className}>
       {(title || description) && (
@@ -40,10 +27,8 @@ export const DataDisplayContainer: FC<DataDisplayContainerProps> = ({
           )}
         </div>
       )}
-      <div className="border-t border-gray-100">
-        <dl className={`divide-y divide-gray-100 ${getGridClass()}`}>
-          {children}
-        </dl>
+      <div className="border rounded-md border-gray-100">
+        <dl className="divide-y divide-gray-100 flex flex-col">{children}</dl>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import {
   OrganisationParams,
   OrganisationQuery,
   OrganisationsManyResponse,
+  OrganisationStatisticsResponse,
 } from "./types";
 
 interface GetOrganisationByIdFetcherProps {
@@ -59,6 +60,31 @@ export const getMemberOrganisationsFetcher = async ({
     query,
     params,
   });
+  if (res.success) {
+    return res;
+  }
+  throw new Error(res.message);
+};
+
+interface GetOrganisationStatisticsFetcherProps {
+  id?: string | null;
+  getIdToken: () => Promise<string>;
+}
+/**
+ * Fetches statistics for an organisation.
+ * @param {GetOrganisationStatisticsFetcherProps} props The fetcher props.
+ * @returns {Promise<OrganisationStatisticsResponse>} The organisation statistics.
+ */
+export const getOrganisationStatisticsFetcher = async ({
+  id,
+  getIdToken,
+}: GetOrganisationStatisticsFetcherProps): Promise<OrganisationStatisticsResponse> => {
+  if (!id) {
+    return null;
+  }
+  const token = await getIdToken();
+  const organisationService = new OrganisationService(token);
+  const res = await organisationService.getStatistics({ id });
   if (res.success) {
     return res;
   }

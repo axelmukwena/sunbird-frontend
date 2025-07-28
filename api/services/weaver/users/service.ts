@@ -113,7 +113,7 @@ export class UserService extends WeaverApiService {
   }: GetByIdUserProps): Promise<DataServiceResponse<User | null>> {
     try {
       const res = await this.api.get<GetUserResponseApi>(
-        getUserApiUrlV1({ id, action: ApiActionUser.GET_BY_ID }),
+        getUserApiUrlV1({ user_id: id, action: ApiActionUser.GET_BY_ID }),
       );
 
       if (
@@ -152,7 +152,7 @@ export class UserService extends WeaverApiService {
   }: UpdateUserProps): Promise<DataServiceResponse<User | null>> {
     try {
       const res = await this.api.put<UpdateUserResponseApi>(
-        getUserApiUrlV1({ id, action: ApiActionUser.UPDATE }),
+        getUserApiUrlV1({ user_id: id, action: ApiActionUser.UPDATE }),
         data,
       );
 
@@ -192,7 +192,7 @@ export class UserService extends WeaverApiService {
   }: UpdateUserStatusProps): Promise<DataServiceResponse<User | null>> {
     try {
       const res = await this.api.put<UpdateUserStatusResponseApi>(
-        getUserApiUrlV1({ id, action: ApiActionUser.UPDATE_STATUS }),
+        getUserApiUrlV1({ user_id: id, action: ApiActionUser.UPDATE_STATUS }),
         data,
       );
 
@@ -232,7 +232,8 @@ export class UserService extends WeaverApiService {
   }: UpdateUserPasswordProps): Promise<DataServiceResponse<BasicApiResponse>> {
     try {
       const res = await this.api.put(
-        getUserApiUrlV1({ id, action: ApiActionUser.UPDATE }) + "/password",
+        getUserApiUrlV1({ user_id: id, action: ApiActionUser.UPDATE }) +
+          "/password",
         data,
       );
 
@@ -265,7 +266,7 @@ export class UserService extends WeaverApiService {
   }: DeleteUserProps): Promise<DataServiceResponse<BasicApiResponse>> {
     try {
       const res = await this.api.delete<DeleteUserResponseApi>(
-        getUserApiUrlV1({ id, action: ApiActionUser.DELETE }),
+        getUserApiUrlV1({ user_id: id, action: ApiActionUser.DELETE }),
       );
 
       if (isRequestSuccess(res.status)) {

@@ -1,5 +1,13 @@
 import { ApiActionAttendee } from "./types";
 
+interface AttendeeUrlBuildingParams {
+  base_url: string;
+  attendee_id?: string | null;
+  device_fingerprint?: string | null;
+}
+
+type AttendeeUrlBuilder = (params: AttendeeUrlBuildingParams) => string;
+
 interface GetAttendeeApiUrlV1Params {
   organisation_id: string;
   action: ApiActionAttendee;
@@ -8,9 +16,55 @@ interface GetAttendeeApiUrlV1Params {
 }
 
 /**
- * Get the API URL for attendee endpoints
- * @param {GetAttendeeApiUrlV1Params} params The parameters to get the API URL
- * @returns {string} The API URL
+ * URL builders for each attendee action type.
+ * Each function takes the necessary parameters and returns the complete URL.
+ */
+const attendeeUrlBuilders: Record<ApiActionAttendee, AttendeeUrlBuilder> = {
+  // Collection endpoints
+  [ApiActionAttendee.GET_FILTERED]: ({ base_url }) => `${base_url}/filtered`,
+
+  // Individual attendee endpoints
+  [ApiActionAttendee.GET_BY_ID]: ({ base_url, attendee_id }) =>
+    `${base_url}/${attendee_id}`,
+  [ApiActionAttendee.UPDATE]: ({ base_url, attendee_id }) =>
+    `${base_url}/${attendee_id}`,
+  [ApiActionAttendee.DELETE]: ({ base_url, attendee_id }) =>
+    `${base_url}/${attendee_id}`,
+  [ApiActionAttendee.CANCEL]: ({ base_url, attendee_id }) =>
+    `${base_url}/${attendee_id}/cancel`,
+  [ApiActionAttendee.SUBMIT_FEEDBACK]: ({ base_url, attendee_id }) =>
+    `${base_url}/${attendee_id}/feedback`,
+
+  // Registration endpoints
+  [ApiActionAttendee.REGISTER]: ({ base_url }) => `${base_url}/register`,
+
+  // Guest endpoints (using device fingerprint)
+  [ApiActionAttendee.GUEST_CHECKIN]: ({ base_url }) =>
+    `${base_url}/checkin/public`,
+  [ApiActionAttendee.GET_GUEST_BY_FINGERPRINT]: ({
+    base_url,
+    device_fingerprint,
+  }) => `${base_url}/guest/${device_fingerprint}`,
+  [ApiActionAttendee.UPDATE_GUEST_BY_FINGERPRINT]: ({
+    base_url,
+    device_fingerprint,
+  }) => `${base_url}/guest/${device_fingerprint}`,
+  [ApiActionAttendee.CANCEL_GUEST_BY_FINGERPRINT]: ({
+    base_url,
+    device_fingerprint,
+  }) => `${base_url}/guest/${device_fingerprint}/cancel`,
+  [ApiActionAttendee.SUBMIT_GUEST_FEEDBACK]: ({
+    base_url,
+    device_fingerprint,
+  }) => `${base_url}/guest/${device_fingerprint}/feedback`,
+};
+
+/**
+ * Generate the complete API URL for attendee endpoints.
+ *
+ * @param params - The parameters needed to build the URL
+ * @returns The complete API URL for the specified action
+ * @throws Error if the action is not recognized
  */
 export const getAttendeeApiUrlV1 = ({
   organisation_id,
@@ -18,32 +72,16 @@ export const getAttendeeApiUrlV1 = ({
   attendee_id,
   device_fingerprint,
 }: GetAttendeeApiUrlV1Params): string => {
-  const baseUrl = `/api/v1/organisations/${organisation_id}/attendees`;
+  const base_url = `/api/v1/organisations/${organisation_id}/attendees`;
 
-  switch (action) {
-    case ApiActionAttendee.GET_FILTERED:
-      return `${baseUrl}/filtered`;
-    case ApiActionAttendee.GET_BY_ID:
-    case ApiActionAttendee.UPDATE:
-    case ApiActionAttendee.DELETE:
-      return `${baseUrl}/${attendee_id}`;
-    case ApiActionAttendee.REGISTER:
-      return `${baseUrl}/register`;
-    case ApiActionAttendee.GUEST_CHECKIN:
-      return `${baseUrl}/checkin/public`;
-    case ApiActionAttendee.GET_GUEST_BY_FINGERPRINT:
-      return `${baseUrl}/guest/${device_fingerprint}`;
-    case ApiActionAttendee.UPDATE_GUEST_BY_FINGERPRINT:
-      return `${baseUrl}/guest/${device_fingerprint}`;
-    case ApiActionAttendee.CANCEL_GUEST_BY_FINGERPRINT:
-      return `${baseUrl}/guest/${device_fingerprint}/cancel`;
-    case ApiActionAttendee.CANCEL:
-      return `${baseUrl}/${attendee_id}/cancel`;
-    case ApiActionAttendee.SUBMIT_FEEDBACK:
-      return `${baseUrl}/${attendee_id}/feedback`;
-    case ApiActionAttendee.SUBMIT_GUEST_FEEDBACK:
-      return `${baseUrl}/guest/${device_fingerprint}/feedback`;
-    default:
-      return baseUrl;
+  const urlBuilder = attendeeUrlBuilders[action];
+  if (!urlBuilder) {
+    throw new Error(`Unsupported attendee API action: ${action}`);
   }
+
+  return urlBuilder({
+    base_url,
+    attendee_id,
+    device_fingerprint,
+  });
 };

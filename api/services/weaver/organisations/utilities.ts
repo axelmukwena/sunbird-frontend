@@ -4,59 +4,95 @@ import {
   OrganisationQuery,
 } from "./types";
 
+interface OrganisationUrlBuildingParams {
+  base_url: string;
+  organisation_id?: string | null;
+}
+
+type OrganisationUrlBuilder = (params: OrganisationUrlBuildingParams) => string;
+
 interface GetOrganisationApiUrlV1Params {
   action: ApiActionOrganisation;
-  id?: string | null;
+  organisation_id?: string | null;
 }
 
 /**
- * Get the API URL for organisation endpoints
- * @param {GetOrganisationApiUrlV1Params} params The parameters to get the API URL
- * @returns {string} The API URL
+ * URL builders for each organisation action type.
+ * Each function takes the necessary parameters and returns the complete URL.
+ */
+const organisationUrlBuilders: Record<
+  ApiActionOrganisation,
+  OrganisationUrlBuilder
+> = {
+  // Collection endpoints
+  [ApiActionOrganisation.GET_FILTERED]: ({ base_url }) =>
+    `${base_url}/filtered`,
+  [ApiActionOrganisation.GET_FILTERED_MEMBER]: ({ base_url }) =>
+    `${base_url}/filtered-member`,
+  [ApiActionOrganisation.CREATE]: ({ base_url }) => base_url,
+  [ApiActionOrganisation.GET_STATISTICS]: ({ base_url, organisation_id }) =>
+    `${base_url}/${organisation_id}/statistics`,
+
+  // Individual organisation endpoints
+  [ApiActionOrganisation.GET_BY_ID]: ({ base_url, organisation_id }) =>
+    `${base_url}/${organisation_id}`,
+  [ApiActionOrganisation.UPDATE]: ({ base_url, organisation_id }) =>
+    `${base_url}/${organisation_id}`,
+  [ApiActionOrganisation.DELETE]: ({ base_url, organisation_id }) =>
+    `${base_url}/${organisation_id}`,
+
+  // Organisation-specific operations
+  [ApiActionOrganisation.UPDATE_DATABASE_STATUS]: ({
+    base_url,
+    organisation_id,
+  }) => `${base_url}/${organisation_id}/database-status`,
+};
+
+/**
+ * Generate the complete API URL for organisation endpoints.
+ *
+ * @param params - The parameters needed to build the URL
+ * @returns The complete API URL for the specified action
+ * @throws Error if the action is not recognized
  */
 export const getOrganisationApiUrlV1 = ({
   action,
-  id,
+  organisation_id,
 }: GetOrganisationApiUrlV1Params): string => {
-  const baseUrl = `/api/v1/organisations`;
-  switch (action) {
-    case ApiActionOrganisation.GET_FILTERED:
-      return `${baseUrl}/filtered`;
-    case ApiActionOrganisation.GET_FILTERED_MEMBER:
-      return `${baseUrl}/filtered-member`;
-    case ApiActionOrganisation.CREATE:
-      return baseUrl;
-    case ApiActionOrganisation.GET_BY_ID:
-    case ApiActionOrganisation.UPDATE:
-    case ApiActionOrganisation.DELETE:
-      return `${baseUrl}/${id}`;
-    case ApiActionOrganisation.UPDATE_DATABASE_STATUS:
-      return `${baseUrl}/${id}/database-status`;
-    default:
-      return baseUrl;
+  const base_url = `/api/v1/organisations`;
+
+  const urlBuilder = organisationUrlBuilders[action];
+  if (!urlBuilder) {
+    throw new Error(`Unsupported organisation API action: ${action}`);
   }
+
+  return urlBuilder({
+    base_url,
+    organisation_id,
+  });
 };
 
 interface GetOrganisationSwrUrlParams extends GetOrganisationApiUrlV1Params {
-  query: OrganisationQuery;
-  params: OrganisationParams;
+  query?: OrganisationQuery | null;
+  params?: OrganisationParams | null;
 }
 
 /**
- * Get the SWR URL for the organisation
- * @param {GetOrganisationSwrUrlParams} params The parameters to get the SWR URL
- * @returns {string} The SWR URL
+ * Generate the SWR URL for organisation endpoints with query parameters.
+ *
+ * @param params - The parameters needed to build the SWR URL
+ * @returns The complete SWR URL with serialized query and params
  */
 export const getOrganisationSwrUrlV1 = ({
   action,
-  id,
+  organisation_id,
   query,
   params,
 }: GetOrganisationSwrUrlParams): string => {
-  return (
-    getOrganisationApiUrlV1({
-      action,
-      id,
-    }) + `?query=${JSON.stringify(query)}&params=${JSON.stringify(params)}`
-  );
+  const baseUrl = getOrganisationApiUrlV1({
+    action,
+    organisation_id,
+  });
+
+  return `${baseUrl}?query=${JSON.stringify(query)}&params=${JSON.stringify(params)}`;
 };

@@ -39,7 +39,6 @@ export const OrganisationHeader = (): React.JSX.Element => {
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-            <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbPage className="flex items-center gap-1">
                 Organisation

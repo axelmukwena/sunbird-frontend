@@ -46,16 +46,21 @@ export enum MeetingSortBy {
 }
 
 export enum ApiActionMeeting {
-  GET_FILTERED = "filtered",
-  CREATE = "",
-  REGENERATE_QRCODE = "qrcode/regenerate",
-  GET_BY_ID = "",
-  UPDATE = "",
-  UPDATE_DATABASE_STATUS = "database-status",
-  DELETE = "",
-  GET_RECURRING_SERIES = "recurring-series",
-  CHECK_LOCATION = "check-location",
-  PUBLIC = "public",
+  // Collection operations
+  GET_FILTERED = "GET_FILTERED",
+
+  // Individual meeting operations
+  CREATE = "CREATE",
+  GET_BY_ID = "GET_BY_ID",
+  UPDATE = "UPDATE",
+  DELETE = "DELETE",
+
+  // Meeting-specific operations
+  REGENERATE_QRCODE = "REGENERATE_QRCODE",
+  UPDATE_DATABASE_STATUS = "UPDATE_DATABASE_STATUS",
+  GET_RECURRING_SERIES = "GET_RECURRING_SERIES",
+  CHECK_LOCATION = "CHECK_LOCATION",
+  PUBLIC = "PUBLIC",
 }
 
 // Base interfaces

@@ -30,12 +30,17 @@ export enum UserSortBy {
 }
 
 export enum ApiActionUser {
-  GET_FILTERED = "filtered",
-  CREATE = "",
-  GET_BY_ID = "",
-  UPDATE = "",
-  UPDATE_STATUS = "status",
-  DELETE = "",
+  // Collection operations
+  GET_FILTERED = "GET_FILTERED",
+  CREATE = "CREATE",
+
+  // Individual user operations
+  GET_BY_ID = "GET_BY_ID",
+  UPDATE = "UPDATE",
+  DELETE = "DELETE",
+
+  // User-specific operations
+  UPDATE_STATUS = "UPDATE_STATUS",
 }
 
 // User interfaces

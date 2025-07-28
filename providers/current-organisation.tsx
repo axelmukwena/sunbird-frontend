@@ -19,8 +19,13 @@ interface CurrentOrganisationProviderProps {
 export const CurrentOrganisationProvider: FC<
   CurrentOrganisationProviderProps
 > = ({ children }) => {
-  const { currentOrganisation, isLoading, error, mutateCurrentOrganisation } =
-    useCurrentOrganisation();
+  const {
+    currentOrganisation,
+    isLoading,
+    error,
+    setCurrentOrganisation,
+    mutateCurrentOrganisation,
+  } = useCurrentOrganisation();
 
   // Show loader while fetching current organisation data
   if (isLoading) {
@@ -31,6 +36,7 @@ export const CurrentOrganisationProvider: FC<
     currentOrganisation,
     isLoading,
     error,
+    setCurrentOrganisation,
     mutateCurrentOrganisation,
   };
 

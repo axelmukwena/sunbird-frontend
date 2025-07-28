@@ -9,6 +9,8 @@ import {
   UseCurrentOrganisation,
 } from "@/api/services/weaver/organisations/types";
 import { getOrganisationApiUrlV1 } from "@/api/services/weaver/organisations/utilities";
+import { LocalStorageKey } from "@/storage/local/enum";
+import { setLocalStorageItem } from "@/storage/local/storage";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
 import { useUserCredentials } from "../profile/credentials";
@@ -23,8 +25,16 @@ export const useCurrentOrganisation = (): UseCurrentOrganisation => {
   const { getIdToken } = useUserCredentials();
   const { mutate } = useSWRConfig();
 
+  const setCurrentOrganisation = (id: string | null): void => {
+    if (id) {
+      setLocalStorageItem(LocalStorageKey.CURRENT_ORGANISATION_ID, id);
+    } else {
+      setLocalStorageItem(LocalStorageKey.CURRENT_ORGANISATION_ID, null);
+    }
+  };
+
   const organisationSwrUrl = getOrganisationApiUrlV1({
-    id: currentOrganisationId,
+    organisation_id: currentOrganisationId,
     action: ApiActionOrganisation.GET_BY_ID,
   });
 
@@ -56,6 +66,7 @@ export const useCurrentOrganisation = (): UseCurrentOrganisation => {
     currentOrganisation: currentOrganisation || null,
     isLoading,
     error: getErrorMessage(error),
+    setCurrentOrganisation,
     mutateCurrentOrganisation,
   };
 };

@@ -2,7 +2,6 @@
 
 import React, { FC, Fragment } from "react";
 
-import { LinearLoader } from "@/components/loaders/linear";
 import { useCurrentOrganisationContext } from "@/providers/current-organisation";
 
 import { HomeHeader } from "./Header";
@@ -12,24 +11,13 @@ import { UserHome } from "./user";
 interface HomeViewProps {}
 
 export const HomeView: FC<HomeViewProps> = () => {
-  const { currentOrganisation, isLoading } = useCurrentOrganisationContext();
-
-  if (isLoading) {
-    return <LinearLoader />;
-  }
-  if (currentOrganisation) {
-    return (
-      <Fragment>
-        <HomeHeader />
-        <OrganisationMemberHome />
-      </Fragment>
-    );
-  }
+  const { currentOrganisation } = useCurrentOrganisationContext();
 
   return (
     <Fragment>
       <HomeHeader />
       <UserHome />
+      {currentOrganisation && <OrganisationMemberHome />}
     </Fragment>
   );
 };
