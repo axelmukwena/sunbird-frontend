@@ -55,7 +55,7 @@ export const useOrganisationMemberSearch = ({
 
   return {
     organisations: data?.data || [],
-    isLoading: !!(!Object.keys(query).length && !data && !error) || isLoading,
+    isLoading,
     error: getErrorMessage(error),
     handleMutateOrganisations,
   };

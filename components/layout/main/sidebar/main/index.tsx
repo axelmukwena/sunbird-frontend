@@ -21,7 +21,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useCurrentOrganisation } from "@/hooks/organisation/current";
+import { useCurrentOrganisation } from "@/hooks/organisations/current";
 import { MenuItem } from "@/types/general";
 import { ClientPathname } from "@/types/paths";
 import {

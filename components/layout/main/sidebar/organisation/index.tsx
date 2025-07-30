@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useOrganisationMemberSearch } from "@/hooks/organisation/member-search";
+import { useOrganisationMemberSearch } from "@/hooks/organisations/member-search";
 import { useCurrentOrganisationContext } from "@/providers/current-organisation";
 import { useCurrentUserContext } from "@/providers/current-user";
 import { ClientPathname } from "@/types/paths";

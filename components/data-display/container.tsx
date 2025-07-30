@@ -27,7 +27,7 @@ export const DataDisplayContainer: FC<DataDisplayContainerProps> = ({
           )}
         </div>
       )}
-      <div className="border rounded-md border-gray-100">
+      <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-md border shadow-sm">
         <dl className="divide-y divide-gray-100 flex flex-col">{children}</dl>
       </div>
     </div>

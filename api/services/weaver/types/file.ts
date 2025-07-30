@@ -18,7 +18,7 @@ export enum WeaverMimeType {
   XML = "application/xml",
 }
 
-export interface SparrowFileCreate {
+export interface WeaverFileCreate {
   blob_name: string;
   name: string;
   pathname: string;

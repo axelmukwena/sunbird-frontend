@@ -5,7 +5,7 @@ import { FC } from "react";
 
 import { LinearLoader } from "@/components/loaders/linear";
 import { StatisticsCard } from "@/components/view/statistics-card";
-import { useOrganisationStatistics } from "@/hooks/organisation/statistics";
+import { useOrganisationStatistics } from "@/hooks/organisations/statistics";
 import { useCurrentOrganisationContext } from "@/providers/current-organisation";
 
 interface OrganisationStatisticsHomeProps {}

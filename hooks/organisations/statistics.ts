@@ -45,7 +45,7 @@ export const useOrganisationStatistics = ({
 
   return {
     statistics: data?.data || null,
-    isLoading: !!(!data && !error) || isLoading,
+    isLoading,
     error: getErrorMessage(error),
     handleMutateStatistics,
   };

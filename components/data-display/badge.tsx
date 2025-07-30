@@ -22,7 +22,7 @@ export const BadgeDisplayRow: FC<BadgeDisplayRowProps> = ({
 }) => {
   return (
     <DataDisplayRow label={label} caption={caption} className={className}>
-      {!value && (
+      {value && (
         <Badge variant={variant} className="w-fit">
           {value}
         </Badge>

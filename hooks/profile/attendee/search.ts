@@ -136,7 +136,7 @@ export const useAttendeeUserSearch = ({
 
   return {
     attendees: finalAttendees,
-    isLoading: !!(!userId || (!data && !error)) || isLoading,
+    isLoading,
     error: getErrorMessage(error),
     hasMore,
     total,

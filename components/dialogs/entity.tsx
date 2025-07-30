@@ -85,28 +85,38 @@ export const EntityDialog: FC<EntityDialogProps> = ({
         side={side}
         onInteractOutside={onInteractOutside}
         onClick={(e) => e.stopPropagation()}
-        className={mergeTailwind(ENTITY_DIALOG_SIZE_CLASSES[size])}
+        className={mergeTailwind(
+          ENTITY_DIALOG_SIZE_CLASSES[size],
+          "flex flex-col h-full",
+        )}
         showCloseButton={showCloseButton}
       >
         <SheetHeader
-          className={mergeTailwind(!description && !title && "hidden")}
+          className={mergeTailwind(
+            !description && !title && "hidden",
+            "flex-shrink-0 pb-4",
+          )}
         >
           <SheetTitle
-            className={mergeTailwind(!title && "hidden", "text-xl font-bold")}
+            className={mergeTailwind(
+              !title && "hidden",
+              "mr-10 text-xl font-bold break-words",
+            )}
           >
             {title}
           </SheetTitle>
-          <SheetDescription className={mergeTailwind(!description && "hidden")}>
+          <SheetDescription
+            className={mergeTailwind(!description && "hidden", "break-words")}
+          >
             {description}
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea
-          style={{
-            maxHeight: "calc(100vh - 90px)",
-          }}
-        >
-          {children}
-        </ScrollArea>
+
+        <div className="flex-1 min-h-0">
+          <ScrollArea className="h-full">
+            <div className="pb-4">{children}</div>
+          </ScrollArea>
+        </div>
       </SheetContent>
     </Sheet>
   );

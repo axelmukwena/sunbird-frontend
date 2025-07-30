@@ -1,4 +1,4 @@
-import { ApiActionMeeting } from "./types";
+import { ApiActionMeeting, MeetingParams, MeetingQuery } from "./types";
 
 interface MeetingUrlBuildingParams {
   base_url: string;
@@ -66,4 +66,31 @@ export const getMeetingApiUrlV1 = ({
     base_url,
     meeting_id,
   });
+};
+
+interface GetMeetingSwrUrlParams extends GetMeetingApiUrlV1Params {
+  query?: MeetingQuery | null;
+  params?: MeetingParams | null;
+}
+
+/**
+ * Generate the SWR URL for meeting endpoints with query parameters.
+ *
+ * @param params - The parameters needed to build the SWR URL
+ * @returns The complete SWR URL with serialized query and params
+ */
+export const getMeetingSwrUrlV1 = ({
+  meeting_id,
+  action,
+  organisation_id,
+  query,
+  params,
+}: GetMeetingSwrUrlParams): string => {
+  const baseUrl = getMeetingApiUrlV1({
+    meeting_id,
+    action,
+    organisation_id,
+  });
+
+  return `${baseUrl}?query=${JSON.stringify(query)}&params=${JSON.stringify(params)}`;
 };

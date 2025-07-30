@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
-import { ControllerRenderProps, Path } from "react-hook-form";
 
-import { DateFormat, DatePicker } from "../ui/datepicker";
+import { DateTimeFormat, DateTimePicker } from "../ui/datepicker";
 import {
   FormControl,
   FormDescription,
@@ -10,15 +9,12 @@ import {
   FormLabel,
 } from "../ui/form";
 
-interface DatePickerFieldProps<
-  TFieldValues extends Record<string, unknown>,
-  TName extends Path<TFieldValues>,
-> {
-  field: ControllerRenderProps<TFieldValues, TName>;
+interface DatePickerFieldProps {
   label: ReactNode;
-  selectedDate?: Date | null;
-  setSelectedDate: (date: Date | null) => void;
-  format?: DateFormat;
+  selectedDateTime?: Date | null;
+  setSelectedDateTime: (date: Date | null) => void;
+  includeTime?: boolean;
+  format?: DateTimeFormat;
   required?: boolean;
   disabled?: boolean;
   helpText?: string;
@@ -26,33 +22,30 @@ interface DatePickerFieldProps<
   error?: string;
 }
 
-export function DatePickerField<
-  TFieldValues extends Record<string, unknown>,
-  TName extends Path<TFieldValues>,
->({
-  field,
+export function DatePickerField({
   label,
-  selectedDate,
-  setSelectedDate,
+  selectedDateTime,
+  setSelectedDateTime,
   format,
+  includeTime,
   required,
   disabled,
   helpText,
   caption,
   error,
-}: DatePickerFieldProps<TFieldValues, TName>): React.JSX.Element {
+}: DatePickerFieldProps): React.JSX.Element {
   return (
     <FormItem>
       <FormLabel helpText={helpText}>
         {label} {required && "*"}
       </FormLabel>
       <FormControl>
-        <DatePicker
-          {...field}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
+        <DateTimePicker
+          selectedDateTime={selectedDateTime}
+          setSelectedDateTime={setSelectedDateTime}
           disabled={disabled}
           format={format}
+          includeTime={includeTime}
         />
       </FormControl>
       {caption && <FormDescription>{caption}</FormDescription>}

@@ -1,7 +1,9 @@
 import { OauthClient } from "../oauth/types";
+import { WeaverMimeType } from "../types/file";
 import {
   BasicApiResponse,
   DatabaseStatus,
+  DataServiceResponse,
   ErrorApiResponse,
   OrderBy,
 } from "../types/general";
@@ -73,7 +75,7 @@ export interface WeaverFile {
   blob_name: string;
   name: string;
   pathname: string;
-  mime_type: string;
+  mime_type: WeaverMimeType;
   size_bytes: number;
   position: number;
   notes: string | null;
@@ -139,7 +141,6 @@ export interface MeetingBase {
   settings: MeetingSettings;
   custom_fields: MeetingCustomField[] | null;
   recurring_pattern: MeetingRecurringPattern | null;
-  invited_email_addresses: string[] | null;
   expected_attendees: number | null;
   tags: string[] | null;
   notes: string | null;
@@ -184,11 +185,6 @@ export interface MeetingRelationship {
 
 // QR Code options
 export interface QrcodeOptions {
-  width: number;
-  height: number;
-  margin: number;
-  format: string;
-  error_correction: string;
   dark_color: string;
   light_color: string;
 }
@@ -235,6 +231,7 @@ export interface MeetingRadiusSearch {
 }
 
 export interface MeetingQuery {
+  ids?: string[] | null;
   database_statuses?: DatabaseStatus[] | null;
   start_date_from?: string | null;
   start_date_to?: string | null;
@@ -323,3 +320,21 @@ export interface GetPublicMeetingProps {
   meeting_id: string;
   params: OauthClient;
 }
+
+// Hook interfaces
+
+export interface UseMeeting {
+  meeting?: Meeting | null;
+  isLoading: boolean;
+  error: string | null;
+  mutateMeeting: () => void;
+}
+
+export interface UseMeetings {
+  meetings: Meeting[];
+  isLoading: boolean;
+  error: string;
+  mutateMeetings: () => void;
+}
+
+export type MeetingsManyResponse = DataServiceResponse<Meeting[] | null> | null;

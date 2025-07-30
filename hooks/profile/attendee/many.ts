@@ -121,7 +121,7 @@ export const useAttendeeUsersMany = ({
   };
 
   return {
-    isLoading: !!(!userId || (!data && !error)) || isLoading,
+    isLoading,
     attendees,
     count,
     handleMutateAttendees,

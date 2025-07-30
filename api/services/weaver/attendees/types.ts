@@ -166,6 +166,7 @@ export interface AttendeeFeedbackCreate
 
 // Query interfaces
 export interface AttendeeQuery {
+  ids?: string[] | null;
   meeting_ids?: string[] | null;
   user_ids?: string[] | null;
   attendance_statuses?: AttendanceStatus[] | null;

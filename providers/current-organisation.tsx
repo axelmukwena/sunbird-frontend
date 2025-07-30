@@ -4,7 +4,7 @@ import React, { createContext, FC, ReactNode, useContext } from "react";
 
 import { CurrentOrganisationContextType } from "@/api/services/weaver/organisations/types";
 import { LinearLoader } from "@/components/loaders/linear";
-import { useCurrentOrganisation } from "@/hooks/organisation/current";
+import { useCurrentOrganisation } from "@/hooks/organisations/current";
 
 import { CurrentUserProvider } from "./current-user";
 
