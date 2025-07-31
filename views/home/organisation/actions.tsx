@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Group, Settings, UserCog, Users } from "lucide-react";
+import { ArrowRight, Group, Settings, UserCog } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
 
@@ -29,13 +29,6 @@ export const QuickActions: FC = () => {
       description: "Create, view, and manage your meetings",
       href: ClientPathname.MEETINGS,
       icon: <Group className="h-4 w-4" />,
-      variant: "outline",
-    },
-    {
-      title: "View Attendees",
-      description: "See who has attended your meetings",
-      href: ClientPathname.ATTENDEES,
-      icon: <Users className="h-4 w-4" />,
       variant: "outline",
     },
     {

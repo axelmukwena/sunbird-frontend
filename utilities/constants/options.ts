@@ -1,3 +1,4 @@
+import { AttendanceStatus } from "@/api/services/weaver/attendees/types";
 import {
   MembershipAdminStatus,
   MembershipInviteeStatus,
@@ -127,4 +128,39 @@ export const ORGANISATION_TIME_FORMAT_OPTIONS: SelectOptionType[] = [
     caption: "14:30",
     description: "24-hour format (military time)",
   },
+];
+
+export const ATTENDANCE_STATUS_OPTIONS: SelectOptionType[] = [
+  {
+    name: "Registered",
+    value: AttendanceStatus.REGISTERED,
+    color: "blue",
+    badgeVariant: "default",
+  },
+  {
+    name: "Checked In",
+    value: AttendanceStatus.CHECKED_IN,
+    color: "green",
+    badgeVariant: "default",
+  },
+  {
+    name: "Checked In Late",
+    value: AttendanceStatus.CHECKED_IN_LATE,
+    color: "yellow",
+    badgeVariant: "default",
+  },
+  {
+    name: "Cancelled",
+    value: AttendanceStatus.CANCELLED,
+    color: "red",
+    badgeVariant: "secondary",
+  },
+];
+
+export const ATTENDEE_FEEDBACK_RATING_OPTIONS: SelectOptionType[] = [
+  { name: "1 Star", value: "1", color: "red" },
+  { name: "2 Stars", value: "2", color: "orange" },
+  { name: "3 Stars", value: "3", color: "yellow" },
+  { name: "4 Stars", value: "4", color: "green" },
+  { name: "5 Stars", value: "5", color: "blue" },
 ];

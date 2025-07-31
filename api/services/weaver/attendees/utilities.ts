@@ -1,4 +1,4 @@
-import { ApiActionAttendee } from "./types";
+import { ApiActionAttendee, AttendeeParams, AttendeeQuery } from "./types";
 
 interface AttendeeUrlBuildingParams {
   base_url: string;
@@ -28,6 +28,8 @@ const attendeeUrlBuilders: Record<ApiActionAttendee, AttendeeUrlBuilder> = {
     `${base_url}/${attendee_id}`,
   [ApiActionAttendee.UPDATE]: ({ base_url, attendee_id }) =>
     `${base_url}/${attendee_id}`,
+  [ApiActionAttendee.UPDATE_DATABASE_STATUS]: ({ base_url, attendee_id }) =>
+    `${base_url}/${attendee_id}/database-status`,
   [ApiActionAttendee.DELETE]: ({ base_url, attendee_id }) =>
     `${base_url}/${attendee_id}`,
   [ApiActionAttendee.CANCEL]: ({ base_url, attendee_id }) =>
@@ -84,4 +86,33 @@ export const getAttendeeApiUrlV1 = ({
     attendee_id,
     device_fingerprint,
   });
+};
+
+interface GetAttendeeSwrUrlParams extends GetAttendeeApiUrlV1Params {
+  query?: AttendeeQuery | null;
+  params?: AttendeeParams | null;
+}
+
+/**
+ * Generate the SWR URL for attendee endpoints with query parameters.
+ *
+ * @param params - The parameters needed to build the SWR URL
+ * @returns The complete SWR URL with serialized query and params
+ */
+export const getAttendeeSwrUrlV1 = ({
+  attendee_id,
+  device_fingerprint,
+  action,
+  organisation_id,
+  query,
+  params,
+}: GetAttendeeSwrUrlParams): string => {
+  const baseUrl = getAttendeeApiUrlV1({
+    attendee_id,
+    action,
+    organisation_id,
+    device_fingerprint,
+  });
+
+  return `${baseUrl}?query=${JSON.stringify(query)}&params=${JSON.stringify(params)}`;
 };

@@ -6,6 +6,7 @@ import { OrganisationRelationship } from "../organisations/types";
 import {
   BasicApiResponse,
   DatabaseStatus,
+  DataServiceResponse,
   ErrorApiResponse,
   OrderBy,
 } from "../types/general";
@@ -32,6 +33,7 @@ export enum ApiActionAttendee {
   GET_FILTERED = "GET_FILTERED",
   GET_BY_ID = "GET_BY_ID",
   UPDATE = "UPDATE",
+  UPDATE_DATABASE_STATUS = "UPDATE_DATABASE_STATUS",
   DELETE = "DELETE",
   CANCEL = "CANCEL",
   SUBMIT_FEEDBACK = "SUBMIT_FEEDBACK",
@@ -148,21 +150,36 @@ export interface AttendeeBaseCreate extends AttendeeBase {
   user_id?: string | null;
 }
 
-export interface AttendeeCreate
-  extends OauthClient,
-    AttendeeBaseCreate,
+export interface AttendeeCreateGuestClient
+  extends AttendeeBaseCreate,
     AttendeeCheckinCreate,
     AttendeeFeedbackCreateInternal {}
 
-export interface AttendeeUpdate extends OauthClient, AttendeeBase {}
+export interface AttendeeCreateGuest
+  extends OauthClient,
+    AttendeeCreateGuestClient {}
+
+export interface AttendeeUpdate extends AttendeeBase {}
+
+export interface AttendeeUpdateGuestClient extends AttendeeBase {}
+export interface AttendeeUpdateGuest
+  extends OauthClient,
+    AttendeeUpdateGuestClient {}
 
 export interface AttendeeCancel {
   status: AttendanceStatus;
 }
 
+export interface AttendeeDatabaseStatusUpdate {
+  database_status: DatabaseStatus;
+}
+
+export interface AttendeeFeedbackCreateClient
+  extends AttendeeFeedbackCreateInternal {}
+
 export interface AttendeeFeedbackCreate
   extends OauthClient,
-    AttendeeFeedbackCreateInternal {}
+    AttendeeFeedbackCreateClient {}
 
 // Query interfaces
 export interface AttendeeQuery {
@@ -208,6 +225,9 @@ export type GetGuestAttendeeResponseApi = Attendee | ErrorApiResponse;
 export type UpdateGuestAttendeeResponseApi = Attendee | ErrorApiResponse;
 export type CancelGuestAttendanceResponseApi = Attendee | ErrorApiResponse;
 export type UpdateAttendeeResponseApi = Attendee | ErrorApiResponse;
+export type UpdateAttendeeDatabaseStatusResponseApi =
+  | Attendee
+  | ErrorApiResponse;
 export type DeleteAttendeeResponseApi = BasicApiResponse | ErrorApiResponse;
 export type CancelAttendanceResponseApi = Attendee | ErrorApiResponse;
 export type SubmitFeedbackResponseApi = Attendee | ErrorApiResponse;
@@ -235,24 +255,34 @@ export interface RegisterAttendeeProps {
 
 export interface GuestCheckinProps {
   organisation_id: string;
-  data: AttendeeCreate;
+  data: AttendeeCreateGuest;
 }
 
-export interface GetGuestAttendeeProps {
+export interface GetGuestAttendeeClientProps {
   organisation_id: string;
   device_fingerprint: string;
+}
+
+export interface GetGuestAttendeeProps extends GetGuestAttendeeClientProps {
   params: OauthClient;
 }
 
-export interface UpdateGuestAttendeeProps {
+export interface UpdateGuestAttendeeClientProps {
   organisation_id: string;
   device_fingerprint: string;
-  data: AttendeeUpdate;
+  data: AttendeeUpdateGuest;
+}
+export interface UpdateGuestAttendeeProps
+  extends UpdateGuestAttendeeClientProps {
+  params: OauthClient;
 }
 
-export interface CancelGuestAttendanceProps {
+export interface CancelGuestAttendanceClientProps {
   organisation_id: string;
   device_fingerprint: string;
+}
+export interface CancelGuestAttendanceProps
+  extends CancelGuestAttendanceClientProps {
   params: OauthClient;
 }
 
@@ -260,6 +290,12 @@ export interface UpdateAttendeeProps {
   organisation_id: string;
   id: string;
   data: AttendeeUpdate;
+}
+
+export interface UpdateAttendeeDatabaseStatusProps {
+  organisation_id: string;
+  id: string;
+  data: AttendeeDatabaseStatusUpdate;
 }
 
 export interface DeleteAttendeeProps {
@@ -299,3 +335,23 @@ export interface GetAttendeeUserStatisticsProps {
   user_id: string;
   query: AttendeeUserStatisticsQuery;
 }
+
+// Hook interfaces
+
+export interface UseAttendee {
+  attendee?: Attendee | null;
+  isLoading: boolean;
+  error: string | null;
+  mutateAttendee: () => void;
+}
+
+export interface UseAttendees {
+  attendees: Attendee[];
+  isLoading: boolean;
+  error: string;
+  mutateAttendees: () => void;
+}
+
+export type AttendeesManyResponse = DataServiceResponse<
+  Attendee[] | null
+> | null;

@@ -120,6 +120,7 @@ export class AttendeeNoTokenService extends WeaverNoTokenApiService {
     organisation_id,
     device_fingerprint,
     data,
+    params,
   }: UpdateGuestAttendeeProps): Promise<DataServiceResponse<Attendee | null>> {
     try {
       const res = await this.api.put<UpdateGuestAttendeeResponseApi>(
@@ -129,6 +130,7 @@ export class AttendeeNoTokenService extends WeaverNoTokenApiService {
           action: ApiActionAttendee.UPDATE_GUEST_BY_FINGERPRINT,
         }),
         data,
+        { params },
       );
 
       if (

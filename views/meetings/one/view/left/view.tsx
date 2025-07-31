@@ -10,6 +10,7 @@ import { LinkDisplayRow } from "@/components/data-display/link";
 import { ListDisplayRow } from "@/components/data-display/list";
 import { TextDisplayRow } from "@/components/data-display/text";
 import { Variant } from "@/types/general";
+import { mergeTailwind } from "@/utilities/helpers/tailwind";
 
 interface MeetingContentViewProps {
   meeting: Meeting;
@@ -61,7 +62,7 @@ export const MeetingContentView: FC<MeetingContentViewProps> = ({
   };
 
   return (
-    <div className={className}>
+    <div className={mergeTailwind("w-full", className)}>
       {/* Basic Information */}
       <DataDisplayContainer
         title="Meeting Details"

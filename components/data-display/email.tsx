@@ -1,4 +1,3 @@
-import { MailIcon } from "lucide-react";
 import { FC } from "react";
 
 import { WeaverLink } from "../common/weaver-link";
@@ -24,7 +23,6 @@ export const EmailDisplayRow: FC<EmailDisplayRowProps> = ({
           href={`mailto:${value}`}
           className="inline-flex items-center space-x-2"
         >
-          <MailIcon className="w-4 h-4 flex-shrink-0" />
           <span className="truncate">{value}</span>
         </WeaverLink>
       )}

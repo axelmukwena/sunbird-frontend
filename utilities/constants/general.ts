@@ -7,7 +7,6 @@ import {
   Shield,
   User,
   UserCheck,
-  Users,
 } from "lucide-react";
 
 import { WeaverMimeType } from "@/api/services/weaver/types/file";
@@ -17,7 +16,6 @@ import { ClientPathname } from "@/types/paths";
 import { StorageHeader } from "../helpers/enums";
 import { ACCEPT_IMAGE_FILE_OPTIONS } from "./options";
 
-// Define the improved menu structure
 export const OVERVIEW_SIDEBAR_MENU_ITEMS: MenuItem[] = [
   {
     title: "Home",
@@ -29,23 +27,10 @@ export const OVERVIEW_SIDEBAR_MENU_ITEMS: MenuItem[] = [
     pathname: ClientPathname.ATTENDANCES,
     icon: UserCheck,
   },
-  // {
-  //   title: "Create Meeting",
-  //   pathname: ClientPathname.ORGANISATION_SETTINGS_NEW,
-  //   icon: PlusSquare,
-  // },
-
-  // Core Asset Management
   {
     title: "Meetings",
     pathname: ClientPathname.MEETINGS,
     icon: Group,
-    requireOrganisation: true,
-  },
-  {
-    title: "Attendees",
-    pathname: ClientPathname.ATTENDEES,
-    icon: Users,
     requireOrganisation: true,
   },
 ] satisfies MenuItem[];

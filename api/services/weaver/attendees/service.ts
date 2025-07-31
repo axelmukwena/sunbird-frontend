@@ -19,6 +19,8 @@ import {
   RegisterAttendeeResponseApi,
   SubmitFeedbackProps,
   SubmitFeedbackResponseApi,
+  UpdateAttendeeDatabaseStatusProps,
+  UpdateAttendeeDatabaseStatusResponseApi,
   UpdateAttendeeProps,
   UpdateAttendeeResponseApi,
 } from "./types";
@@ -194,6 +196,56 @@ export class AttendeeService extends WeaverApiService {
       return {
         success: false,
         message: `Failed to update attendee. ${message}`,
+        data: null,
+        statuscode: 500,
+      };
+    }
+  }
+
+  /**
+   * Update attendee database status
+   * @param {UpdateAttendeeDatabaseStatusProps} props - The database status update data
+   * @returns {Promise<DataServiceResponse<Attendee| null>>} The attendee response
+   */
+  async updateDatabaseStatus({
+    organisation_id,
+    id,
+    data,
+  }: UpdateAttendeeDatabaseStatusProps): Promise<
+    DataServiceResponse<Attendee | null>
+  > {
+    try {
+      const res = await this.api.put<UpdateAttendeeDatabaseStatusResponseApi>(
+        getAttendeeApiUrlV1({
+          organisation_id,
+          attendee_id: id,
+          action: ApiActionAttendee.UPDATE_DATABASE_STATUS,
+        }),
+        data,
+      );
+
+      if (
+        isRequestSuccess(res.status) &&
+        "id" in res.data &&
+        "email" in res.data
+      ) {
+        return {
+          success: true,
+          message: "Attendee database status updated successfully",
+          data: res.data,
+          statuscode: res.status,
+        };
+      }
+
+      return processApiErrorResponse(
+        res,
+        "Failed to update attendee database status",
+      );
+    } catch (error) {
+      const message = getErrorMessage(error);
+      return {
+        success: false,
+        message: `Failed to update attendee database status. ${message}`,
         data: null,
         statuscode: 500,
       };
