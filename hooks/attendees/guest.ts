@@ -19,6 +19,12 @@ interface UseGuestAttendeeProps {
   deviceFingerprint?: string | null;
 }
 
+interface FunctionReturn {
+  attendee?: Attendee | null;
+  success: boolean;
+  error?: string | null;
+}
+
 export interface UseGuestAttendeeReturn {
   attendee: Attendee | null;
   isLoading: boolean;
@@ -28,25 +34,25 @@ export interface UseGuestAttendeeReturn {
   checkin: (
     organisationId: string,
     data: AttendeeCreateGuestClient,
-  ) => Promise<boolean>;
+  ) => Promise<FunctionReturn>;
   getByFingerprint: (
     organisationId: string,
     deviceFingerprint: string,
-  ) => Promise<boolean>;
+  ) => Promise<FunctionReturn>;
   updateByFingerprint: (
     organisationId: string,
     deviceFingerprint: string,
     data: AttendeeUpdateGuestClient,
-  ) => Promise<boolean>;
+  ) => Promise<FunctionReturn>;
   cancelByFingerprint: (
     organisationId: string,
     deviceFingerprint: string,
-  ) => Promise<boolean>;
+  ) => Promise<FunctionReturn>;
   submitFeedback: (
     organisationId: string,
     deviceFingerprint: string,
     data: AttendeeFeedbackCreateClient,
-  ) => Promise<boolean>;
+  ) => Promise<FunctionReturn>;
 
   // Utility
   mutateAttendee: () => void;
@@ -116,10 +122,9 @@ export const useGuestAttendee = ({
     async (
       organisationId: string,
       data: AttendeeCreateGuestClient,
-    ): Promise<boolean> => {
+    ): Promise<FunctionReturn> => {
       try {
         const response = await service.guestCheckin(organisationId, data);
-
         if (response.success && response.data) {
           // Update cache with new attendee data
           mutateAttendeeCache(
@@ -127,13 +132,25 @@ export const useGuestAttendee = ({
             data.checkin.device_fingerprint,
             response.data,
           );
-          return true;
-        } else {
-          throw new Error(response.message);
+          return {
+            attendee: response.data,
+            success: true,
+            error: null,
+          };
         }
+        return {
+          attendee: null,
+          success: false,
+          error: response.message || "Failed to check in guest attendee.",
+        };
       } catch (err) {
-        console.error("Guest checkin error:", err);
-        return false;
+        return {
+          attendee: null,
+          success: false,
+          error:
+            getErrorMessage(err) ||
+            "An unexpected error occurred during check-in.",
+        };
       }
     },
     [mutateAttendeeCache],
@@ -143,7 +160,7 @@ export const useGuestAttendee = ({
     async (
       organisationId: string,
       deviceFingerprint: string,
-    ): Promise<boolean> => {
+    ): Promise<FunctionReturn> => {
       try {
         const response = await service.getGuestByFingerprint({
           organisation_id: organisationId,
@@ -153,13 +170,25 @@ export const useGuestAttendee = ({
         if (response.success && response.data) {
           // Update cache with fetched data
           mutateAttendeeCache(organisationId, deviceFingerprint, response.data);
-          return true;
-        } else {
-          throw new Error(response.message);
+          return {
+            attendee: response.data,
+            success: true,
+            error: null,
+          };
         }
+        return {
+          attendee: null,
+          success: false,
+          error: response.message || "Failed to fetch guest attendee.",
+        };
       } catch (err) {
-        console.error("Get guest by fingerprint error:", err);
-        return false;
+        return {
+          attendee: null,
+          success: false,
+          error:
+            getErrorMessage(err) ||
+            "An unexpected error occurred while fetching guest attendee.",
+        };
       }
     },
     [mutateAttendeeCache],
@@ -170,7 +199,7 @@ export const useGuestAttendee = ({
       organisationId: string,
       deviceFingerprint: string,
       data: AttendeeUpdateGuestClient,
-    ): Promise<boolean> => {
+    ): Promise<FunctionReturn> => {
       try {
         const response = await service.updateGuestByFingerprint({
           organisation_id: organisationId,
@@ -181,13 +210,25 @@ export const useGuestAttendee = ({
         if (response.success && response.data) {
           // Update cache with updated data
           mutateAttendeeCache(organisationId, deviceFingerprint, response.data);
-          return true;
-        } else {
-          throw new Error(response.message);
+          return {
+            attendee: response.data,
+            success: true,
+            error: null,
+          };
         }
+        return {
+          attendee: null,
+          success: false,
+          error: response.message || "Failed to update guest attendee.",
+        };
       } catch (err) {
-        console.error("Update guest by fingerprint error:", err);
-        return false;
+        return {
+          attendee: null,
+          success: false,
+          error:
+            getErrorMessage(err) ||
+            "An unexpected error occurred while updating guest attendee.",
+        };
       }
     },
     [mutateAttendeeCache],
@@ -197,7 +238,7 @@ export const useGuestAttendee = ({
     async (
       organisationId: string,
       deviceFingerprint: string,
-    ): Promise<boolean> => {
+    ): Promise<FunctionReturn> => {
       try {
         const response = await service.cancelGuestByFingerprint({
           organisation_id: organisationId,
@@ -207,13 +248,25 @@ export const useGuestAttendee = ({
         if (response.success) {
           // Remove from cache or set to null after cancellation
           mutateAttendeeCache(organisationId, deviceFingerprint, null);
-          return true;
-        } else {
-          throw new Error(response.message);
+          return {
+            attendee: null,
+            success: true,
+            error: null,
+          };
         }
+        return {
+          attendee: null,
+          success: false,
+          error: response.message || "Failed to cancel guest attendee.",
+        };
       } catch (err) {
-        console.error("Cancel guest by fingerprint error:", err);
-        return false;
+        return {
+          attendee: null,
+          success: false,
+          error:
+            getErrorMessage(err) ||
+            "An unexpected error occurred while cancelling guest attendee.",
+        };
       }
     },
     [mutateAttendeeCache],
@@ -224,7 +277,7 @@ export const useGuestAttendee = ({
       organisationId: string,
       deviceFingerprint: string,
       data: AttendeeFeedbackCreateClient,
-    ): Promise<boolean> => {
+    ): Promise<FunctionReturn> => {
       try {
         const response = await service.submitGuestFeedback(
           organisationId,
@@ -235,13 +288,25 @@ export const useGuestAttendee = ({
         if (response.success) {
           // Revalidate cache after feedback submission
           mutateAttendeeCache(organisationId, deviceFingerprint);
-          return true;
-        } else {
-          throw new Error(response.message);
+          return {
+            attendee: null,
+            success: true,
+            error: null,
+          };
         }
+        return {
+          attendee: null,
+          success: false,
+          error: response.message || "Failed to submit feedback.",
+        };
       } catch (err) {
-        console.error("Submit guest feedback error:", err);
-        return false;
+        return {
+          attendee: null,
+          success: false,
+          error:
+            getErrorMessage(err) ||
+            "An unexpected error occurred while submitting feedback.",
+        };
       }
     },
     [mutateAttendeeCache],

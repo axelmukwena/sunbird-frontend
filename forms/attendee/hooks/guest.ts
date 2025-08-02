@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { Attendee } from "@/api/services/weaver/attendees/types";
 import { useGuestAttendee } from "@/hooks/attendees/guest";
+import { getErrorMessage } from "@/utilities/helpers/errors";
 import { notify } from "@/utilities/helpers/toaster";
 
 import {
@@ -64,9 +65,9 @@ export const useGuestAttendeeCreateUpdate = ({
   ): Promise<boolean> => {
     try {
       const data = getGuestAttendeeCreateData({ values });
-      const success = await checkin(organisationId, data);
+      const checkingReponse = await checkin(organisationId, data);
 
-      if (success) {
+      if (checkingReponse.success) {
         notify({
           message: "Check-in successful! Welcome to the meeting.",
           type: "success",
@@ -81,19 +82,19 @@ export const useGuestAttendeeCreateUpdate = ({
 
         return true;
       } else {
-        const errorMessage = "Failed to check in. Please try again.";
-        notify({ message: errorMessage, type: "error" });
+        const message =
+          checkingReponse.error || "Check-in failed. Please try again.";
+        notify({ message, type: "error" });
         if (onError) {
-          onError(errorMessage);
+          onError(message);
         }
         return false;
       }
     } catch (error) {
-      const errorMessage = "An unexpected error occurred during check-in.";
-      console.error("Guest checkin error:", error);
-      notify({ message: errorMessage, type: "error" });
+      const message = getErrorMessage(error) || "An unexpected error occurred.";
+      notify({ message, type: "error" });
       if (onError) {
-        onError(errorMessage);
+        onError(message);
       }
       return false;
     }
@@ -118,13 +119,13 @@ export const useGuestAttendeeCreateUpdate = ({
 
     try {
       const data = getGuestAttendeeUpdateData({ values });
-      const success = await updateByFingerprint(
+      const fingerprintResponse = await updateByFingerprint(
         organisationId,
         attendee.checkin.device_fingerprint,
         data,
       );
 
-      if (success) {
+      if (fingerprintResponse.success) {
         notify({
           message: "Guest information updated successfully.",
           type: "success",
@@ -139,20 +140,19 @@ export const useGuestAttendeeCreateUpdate = ({
 
         return true;
       } else {
-        const errorMessage =
-          "Failed to update guest information. Please try again.";
-        notify({ message: errorMessage, type: "error" });
+        const message =
+          fingerprintResponse.error || "Update failed. Please try again.";
+        notify({ message, type: "error" });
         if (onError) {
-          onError(errorMessage);
+          onError(message);
         }
         return false;
       }
     } catch (error) {
-      const errorMessage = "An unexpected error occurred while updating.";
-      console.error("Guest update error:", error);
-      notify({ message: errorMessage, type: "error" });
+      const message = getErrorMessage(error) || "An unexpected error occurred.";
+      notify({ message, type: "error" });
       if (onError) {
-        onError(errorMessage);
+        onError(message);
       }
       return false;
     }
@@ -187,14 +187,14 @@ export const useGuestAttendeeCreateUpdate = ({
         await handleCreateGuest(values);
       }
     } catch (error) {
-      const errorMessage = `Failed to ${isEditMode ? "update" : "check in"} guest. Please try again.`;
+      const message =
+        getErrorMessage(error) || "An error occurred during submission.";
       notify({
         type: "error",
-        message: errorMessage,
+        message,
       });
-      console.error(`Guest ${isEditMode ? "update" : "create"} error:`, error);
       if (onError) {
-        onError(errorMessage);
+        onError(message);
       }
     } finally {
       setIsSubmitting(false);
