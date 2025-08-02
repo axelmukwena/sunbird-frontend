@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import { MainLayout } from "@/components/layout/main";
-import { HomeView } from "@/views/home";
+import { HomeView } from "@/views/homeeee";
 
 const HomePage: FC = () => {
   return (
