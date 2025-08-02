@@ -18,6 +18,7 @@ export const useMeetingForm = ({
 }: UseMeetingFormProps): UseMeetingForm => {
   const { currentOrganisation } = useCurrentOrganisationContext();
   const hook = useForm<MeetingFormSchema>({
+    // @ts-expect-error - zodResolver type mismatch with MeetingFormSchema
     resolver: zodResolver(MEETING_FORM_SCHEMA),
     mode: "onChange",
     defaultValues: meetingFormDefaultValues({
@@ -48,6 +49,7 @@ export const useMeetingForm = ({
 
   return {
     organisationId: currentOrganisation?.id || "",
+    // @ts-expect-error - zodResolver type mismatch with MeetingFormSchema
     hook,
     formErrorMessages,
     resetForm,
