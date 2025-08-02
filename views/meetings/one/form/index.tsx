@@ -38,6 +38,7 @@ export const MeetingForm: FC<MeetingFormProps> = ({
   const meetingForm = useMeetingForm({ meeting });
   const {
     hook: {
+      watch,
       control,
       formState: { errors },
     },
@@ -57,6 +58,8 @@ export const MeetingForm: FC<MeetingFormProps> = ({
 
   const isActiveForm = isRecordActive(meeting?.database_status);
   const isEditMode = Boolean(meeting);
+
+  console.log({ errors, coordinates: watch("coordinates") });
 
   return (
     <FormProvider {...meetingForm.hook}>
@@ -204,11 +207,7 @@ export const MeetingForm: FC<MeetingFormProps> = ({
               render={({ field }) => (
                 <TextField
                   field={field}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const numericValue = value ? parseFloat(value) : null;
-                    field.onChange(numericValue);
-                  }}
+                  onChange={field.onChange}
                   onBlur={field.onBlur}
                   label="Latitude"
                   disabled={!isActiveForm}
@@ -222,11 +221,7 @@ export const MeetingForm: FC<MeetingFormProps> = ({
               render={({ field }) => (
                 <TextField
                   field={field}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const numericValue = value ? parseFloat(value) : null;
-                    field.onChange(numericValue);
-                  }}
+                  onChange={field.onChange}
                   onBlur={field.onBlur}
                   label="Longitude"
                   disabled={!isActiveForm}

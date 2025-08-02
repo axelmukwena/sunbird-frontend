@@ -24,18 +24,18 @@ export const meetingFormDefaultValues = ({
     return date.toISOString().slice(0, 16);
   };
 
-  return {
+  const foo = {
     title: meeting?.title || "",
-    description: meeting?.description || null,
+    description: meeting?.description || "",
     start_datetime: meeting?.start_datetime || formatDateTimeLocal(now),
     end_datetime: meeting?.end_datetime || formatDateTimeLocal(oneHourLater),
     timezone:
       meeting?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-    address: meeting?.address || null,
+    address: meeting?.address || "",
     coordinates: meeting?.coordinates || null,
     expected_attendees: meeting?.expected_attendees || null,
-    tags: meeting?.tags || null,
-    notes: meeting?.notes || null,
+    tags: meeting?.tags || [],
+    notes: meeting?.notes || "",
     settings: meeting?.settings || {
       require_location_verification: true,
       checkin_radius_meters: 100,
@@ -45,7 +45,7 @@ export const meetingFormDefaultValues = ({
       send_reminders: true,
       reminder_intervals: [3600, 1800], // 1 hour and 30 minutes before
     },
-    custom_fields: meeting?.custom_fields || null,
+    custom_fields: meeting?.custom_fields || [],
     recurring_pattern: meeting?.recurring_pattern || null,
     qrcode_options: {
       dark_color: "#000000",
@@ -54,9 +54,11 @@ export const meetingFormDefaultValues = ({
     update_effect: meeting
       ? {
           update_type: RecurringUpdateType.THIS_ONLY as const,
-          update_message: null,
+          update_message: "",
           notify_attendees: false,
         }
       : undefined,
   };
+  console.log({ foo });
+  return foo;
 };

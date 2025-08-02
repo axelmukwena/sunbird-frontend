@@ -1,5 +1,6 @@
 import {
   MeetingCreate,
+  MeetingLocationCoordinates,
   MeetingUpdate,
   RecurringUpdateType,
 } from "@/api/services/weaver/meetings/types";
@@ -22,6 +23,15 @@ export interface LoadMeetingUpdateData {
 export const getMeetingCreateData = ({
   values,
 }: LoadMeetingCreateData): MeetingCreate => {
+  const coordinates: MeetingLocationCoordinates | null =
+    values.coordinates &&
+    values.coordinates.latitude &&
+    values.coordinates.longitude
+      ? {
+          latitude: values.coordinates.latitude,
+          longitude: values.coordinates.longitude,
+        }
+      : null;
   const data: MeetingCreate = {
     title: values.title,
     description: values.description,
@@ -29,7 +39,7 @@ export const getMeetingCreateData = ({
     end_datetime: values.end_datetime,
     timezone: values.timezone,
     address: values.address,
-    coordinates: values.coordinates,
+    coordinates: coordinates,
     settings: {
       require_location_verification:
         values.settings.require_location_verification,
@@ -40,7 +50,7 @@ export const getMeetingCreateData = ({
       send_reminders: values.settings.send_reminders,
       reminder_intervals: values.settings.reminder_intervals,
     },
-    custom_fields: values.custom_fields,
+    custom_fields: values.custom_fields?.length ? values.custom_fields : [],
     recurring_pattern: values.recurring_pattern,
     expected_attendees: values.expected_attendees,
     tags: values.tags,
@@ -62,6 +72,15 @@ export const getMeetingCreateData = ({
 export const getMeetingUpdateData = ({
   values,
 }: LoadMeetingUpdateData): MeetingUpdate => {
+  const coordinates: MeetingLocationCoordinates | null =
+    values.coordinates &&
+    values.coordinates.latitude &&
+    values.coordinates.longitude
+      ? {
+          latitude: values.coordinates.latitude,
+          longitude: values.coordinates.longitude,
+        }
+      : null;
   const data: MeetingUpdate = {
     title: values.title,
     description: values.description,
@@ -69,7 +88,7 @@ export const getMeetingUpdateData = ({
     end_datetime: values.end_datetime,
     timezone: values.timezone,
     address: values.address,
-    coordinates: values.coordinates,
+    coordinates: coordinates,
     settings: {
       require_location_verification:
         values.settings.require_location_verification,
@@ -80,7 +99,7 @@ export const getMeetingUpdateData = ({
       send_reminders: values.settings.send_reminders,
       reminder_intervals: values.settings.reminder_intervals,
     },
-    custom_fields: values.custom_fields,
+    custom_fields: values.custom_fields?.length ? values.custom_fields : [],
     recurring_pattern: values.recurring_pattern,
     expected_attendees: values.expected_attendees,
     tags: values.tags,

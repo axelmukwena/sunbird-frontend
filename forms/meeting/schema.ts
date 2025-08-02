@@ -9,15 +9,33 @@ import {
 // Meeting Location Coordinates Schema
 export const MEETING_COORDINATES_SCHEMA = z
   .object({
-    latitude: z
-      .number()
-      .min(-90, "Latitude must be between -90 and 90")
-      .max(90, "Latitude must be between -90 and 90"),
-    longitude: z
-      .number()
-      .min(-180, "Longitude must be between -180 and 180")
-      .max(180, "Longitude must be between -180 and 180"),
+    latitude: z.preprocess(
+      // Preprocess the value: if it's an empty string or null, treat it as undefined.
+      (val) => (val === "" || val === null ? undefined : val),
+      // Now, validate the preprocessed value.
+      z.coerce // Coerce will attempt to convert the type (e.g., "55" to 55)
+        .number({ error: "Latitude must be a number" })
+        .min(-90, "Latitude must be between -90 and 90")
+        .max(90, "Latitude must be between -90 and 90")
+        .optional(),
+    ),
+    longitude: z.preprocess(
+      (val) => (val === "" || val === null ? undefined : val),
+      z.coerce
+        .number({ error: "Longitude must be a number" })
+        .min(-180, "Longitude must be between -180 and 180")
+        .max(180, "Longitude must be between -180 and 180")
+        .optional(),
+    ),
   })
+  // Refine the object: if one coordinate is provided, the other must be too.
+  .refine(
+    (data) => (data.latitude !== undefined) === (data.longitude !== undefined),
+    {
+      message: "Both latitude and longitude must be provided together",
+      path: ["latitude"], // Show error on the latitude field
+    },
+  )
   .nullable();
 
 // Meeting Settings Schema
