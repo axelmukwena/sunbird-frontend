@@ -1,4 +1,10 @@
-import { Archive, EllipsisVertical, PenBox, Trash } from "lucide-react";
+import {
+  Archive,
+  Download,
+  EllipsisVertical,
+  PenBox,
+  Trash,
+} from "lucide-react";
 import { Fragment, useState } from "react";
 
 import { Meeting } from "@/api/services/weaver/meetings/types";
@@ -17,6 +23,7 @@ import { StatusFieldView } from "@/components/ui/view";
 import { useMeetingDatabaseStatus } from "@/forms/meeting/hooks/database-status";
 import { useMeetingDelete } from "@/forms/meeting/hooks/delete";
 import { DATABASE_STATUS_OPTIONS } from "@/utilities/constants/options";
+import { ExportMeetingDialog } from "@/views/attendees/many/export";
 
 import { MeetingForm } from "./form";
 
@@ -35,6 +42,7 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
 }) => {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
   const [actionType, setActionType] = useState<ActionType>("archive");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -86,6 +94,11 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
     setIsDropdownOpen(false);
   };
 
+  const handleExportClick = (): void => {
+    setIsExportDialogOpen(true);
+    setIsDropdownOpen(false);
+  };
+
   return (
     <Fragment>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -100,6 +113,10 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align={contentAlign} className="w-[160px]">
           <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleExportClick}>
+            Export
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleStatusAction}>
             {meeting.database_status === DatabaseStatus.ACTIVE
               ? "Archive"
@@ -117,6 +134,10 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
         <Button variant="outline" size="sm" onClick={handleEditClick}>
           <PenBox className="size-4" />
           <span>Edit</span>
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleExportClick}>
+          <Download className="size-4" />
+          <span>Export</span>
         </Button>
         <Button variant="outline" size="sm" onClick={handleStatusAction}>
           {meeting.database_status === DatabaseStatus.ACTIVE && (
@@ -169,6 +190,11 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
           }
         />
       </EntityDialog>
+      <ExportMeetingDialog
+        meetingId={meeting.id}
+        open={isExportDialogOpen}
+        onOpenChange={setIsExportDialogOpen}
+      />
     </Fragment>
   );
 };

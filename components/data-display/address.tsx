@@ -53,18 +53,21 @@ export const AddressDisplayRow: FC<AddressDisplayRowProps> = ({
       <div className="space-y-2">
         <div className="inline-flex items-start space-x-2">
           <MapPinIcon className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-          <span className="text-sm">{addressString}</span>
+          <span className="text-sm">
+            {addressString} (
+            {showMapLink && (
+              <WeaverLink
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-xs"
+              >
+                View on Maps
+              </WeaverLink>
+            )}
+            )
+          </span>
         </div>
-        {showMapLink && (
-          <WeaverLink
-            href={mapUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-xs"
-          >
-            View on Maps
-          </WeaverLink>
-        )}
       </div>
     </DataDisplayRow>
   );

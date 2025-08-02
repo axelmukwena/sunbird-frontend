@@ -2,12 +2,14 @@ import { LucideIcon } from "lucide-react";
 import { FC } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { mergeTailwind } from "@/utilities/helpers/tailwind";
 
 interface StatisticsCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
   description: string;
+  valueClassName?: string;
 }
 
 export const StatisticsCard: FC<StatisticsCardProps> = ({
@@ -15,6 +17,7 @@ export const StatisticsCard: FC<StatisticsCardProps> = ({
   value,
   icon: Icon,
   description,
+  valueClassName,
 }) => (
   <Card>
     <CardContent>
@@ -22,7 +25,9 @@ export const StatisticsCard: FC<StatisticsCardProps> = ({
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-600">{title}</p>
           <div className="flex items-end space-x-2">
-            <p className="text-2xl font-bold">{value}</p>
+            <p className={mergeTailwind("text-2xl font-bold", valueClassName)}>
+              {value}
+            </p>
             <p className="text-xs text-gray-500 mb-[5px]">{description}</p>
           </div>
         </div>

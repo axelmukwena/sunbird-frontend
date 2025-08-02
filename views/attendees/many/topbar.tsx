@@ -1,12 +1,13 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import { FC, Fragment, useState } from "react";
 
 import { EntityDialog } from "@/components/dialogs/entity";
 import { Button } from "@/components/ui/button";
 
 import { AttendeeForm } from "../one/form";
+import { ExportMeetingDialog } from "./export";
 
 interface AttendeesTopbarProps {
   meetingId: string;
@@ -18,6 +19,8 @@ export const AttendeesTopbar: FC<AttendeesTopbarProps> = ({
   handleMutateAttendees,
 }): React.JSX.Element => {
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
+
   return (
     <Fragment>
       <div className="flex items-center justify-between space-y-2">
@@ -28,15 +31,27 @@ export const AttendeesTopbar: FC<AttendeesTopbarProps> = ({
           </p>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsFormDialogOpen(true)}
-        >
-          <Plus className="size-4" />
-          <span>New</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsExportDialogOpen(true)}
+          >
+            <Download className="size-4" />
+            <span>Export</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsFormDialogOpen(true)}
+          >
+            <Plus className="size-4" />
+            <span>New</span>
+          </Button>
+        </div>
       </div>
+
+      {/* Create Attendee Dialog */}
       <EntityDialog
         open={isFormDialogOpen}
         setOpen={setIsFormDialogOpen}
@@ -52,6 +67,12 @@ export const AttendeesTopbar: FC<AttendeesTopbarProps> = ({
           setCloseDialog={() => setIsFormDialogOpen(false)}
         />
       </EntityDialog>
+
+      <ExportMeetingDialog
+        meetingId={meetingId}
+        open={isExportDialogOpen}
+        onOpenChange={setIsExportDialogOpen}
+      />
     </Fragment>
   );
 };

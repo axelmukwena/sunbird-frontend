@@ -33,6 +33,7 @@ export const AttendeesContentView: FC<AttendeesContentViewProps> = ({
   const { isLoading, attendees, count, handleMutateAttendees } =
     useAttendeesMany({
       search,
+      meeting_ids: [meetingId],
       sortBy,
       orderBy,
       limit,

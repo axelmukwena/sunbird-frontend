@@ -50,7 +50,7 @@ interface GetManyAttendeesFetcherProps {
  * @param {GetManyAttendeesFetcherProps} props The fetcher props.
  * @returns {Promise<AttendeesManyResponse>} The attendees.
  */
-export const getAttendeesFetcher = async ({
+export const getAttendeesManyFetcher = async ({
   organisation_id,
   params,
   query,
@@ -74,4 +74,46 @@ export const getAttendeesFetcher = async ({
     return res;
   }
   throw new Error(res.message);
+};
+
+/**
+ * Fetches all attendees across pages.
+ * @param {GetManyAttendeesFetcherProps} props The fetcher props.
+ * @returns {Promise<AttendeesManyResponse>} The attendees.
+ */
+export const getAttendeesAllFetcher = async ({
+  organisation_id,
+  query,
+  getIdToken,
+  requireIdsOrSearch,
+}: GetManyAttendeesFetcherProps): Promise<AttendeesManyResponse> => {
+  let allAttendees: Attendee[] = [];
+  let currentPage = 0;
+  let totalCount = 0;
+  const limit = 100;
+  do {
+    const response = await getAttendeesManyFetcher({
+      organisation_id,
+      params: { skip: currentPage * limit },
+      query,
+      getIdToken,
+      requireIdsOrSearch,
+    });
+
+    if (response && response.data) {
+      allAttendees = allAttendees.concat(response.data);
+      totalCount = response.total || 0;
+    } else {
+      break; // No more attendees to fetch
+    }
+
+    currentPage++;
+  } while (allAttendees.length < totalCount);
+
+  return {
+    success: true,
+    data: allAttendees,
+    total: totalCount,
+    message: "Fetched all attendees successfully",
+  };
 };

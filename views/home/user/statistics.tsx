@@ -35,6 +35,9 @@ export const UserAttendeeStatisticsHome: FC<
       />
       <StatisticsCard
         title="Last Attendance"
+        valueClassName={
+          statistics?.last_attendance_date ? "text-sm" : undefined
+        }
         value={
           statistics?.last_attendance_date
             ? getFormattedDateAndTime({

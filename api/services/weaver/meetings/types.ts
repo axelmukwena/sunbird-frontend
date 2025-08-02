@@ -1,4 +1,5 @@
 import { OauthClient } from "../oauth/types";
+import { OrganisationRelationship } from "../organisations/types";
 import { WeaverMimeType } from "../types/file";
 import {
   BasicApiResponse,
@@ -158,12 +159,17 @@ export interface MeetingAttachments {
   attachments: WeaverFile[] | null;
 }
 
+export interface MeetingRelatives {
+  organisation: OrganisationRelationship | null;
+}
+
 export interface Meeting
   extends MeetingForeignKeys,
     MeetingBase,
     MeetingQrcode,
     MeetingImage,
-    MeetingAttachments {
+    MeetingAttachments,
+    MeetingRelatives {
   id: string;
   created_at: string;
   updated_at: string | null;

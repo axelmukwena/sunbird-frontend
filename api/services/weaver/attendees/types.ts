@@ -270,7 +270,7 @@ export interface GetGuestAttendeeProps extends GetGuestAttendeeClientProps {
 export interface UpdateGuestAttendeeClientProps {
   organisation_id: string;
   device_fingerprint: string;
-  data: AttendeeUpdateGuest;
+  data: AttendeeUpdateGuestClient;
 }
 export interface UpdateGuestAttendeeProps
   extends UpdateGuestAttendeeClientProps {

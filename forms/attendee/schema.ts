@@ -3,6 +3,8 @@ import { z } from "zod";
 import { AttendanceStatus } from "@/api/services/weaver/attendees/types";
 import { CustomFieldType } from "@/api/services/weaver/meetings/types";
 
+import { PHONE_NUMBER_OPTIONAL_SCHEMA } from "../phonenumber";
+
 // Attendee Checkin Location Schema
 const ATTENDEE_CHECKIN_LOCATION_SCHEMA = z.object({
   latitude: z
@@ -80,7 +82,7 @@ const ATTENDEE_BASE_SCHEMA = z.object({
     .string()
     .min(1, "Last name is required")
     .max(100, "Last name is too long"),
-  phone_number: z.string().max(20, "Phone number is too long").nullable(),
+  phone_number: PHONE_NUMBER_OPTIONAL_SCHEMA,
   organisation_name: z
     .string()
     .max(255, "Organisation name is too long")
@@ -112,21 +114,4 @@ export const ATTENDEE_FORM_SCHEMA = ATTENDEE_BASE_SCHEMA.extend({
   },
 );
 
-// Specific schemas for different operations
-export const ATTENDEE_REGISTER_SCHEMA = ATTENDEE_BASE_SCHEMA.extend({
-  meeting_id: z.string().min(1, "Meeting ID is required"),
-  user_id: z.string().nullable(),
-});
-
-export const ATTENDEE_GUEST_CHECKIN_SCHEMA = ATTENDEE_BASE_SCHEMA.extend({
-  meeting_id: z.string().min(1, "Meeting ID is required"),
-  checkin: ATTENDEE_CHECKIN_INFO_SCHEMA,
-  feedback: ATTENDEE_FEEDBACK_INFO_SCHEMA,
-});
-
-// Type exports
 export type AttendeeFormSchema = z.infer<typeof ATTENDEE_FORM_SCHEMA>;
-export type AttendeeRegisterSchema = z.infer<typeof ATTENDEE_REGISTER_SCHEMA>;
-export type AttendeeGuestCheckinSchema = z.infer<
-  typeof ATTENDEE_GUEST_CHECKIN_SCHEMA
->;

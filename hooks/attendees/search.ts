@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 
-import { getAttendeesFetcher } from "@/api/services/weaver/attendees/fetchers";
+import { getAttendeesManyFetcher } from "@/api/services/weaver/attendees/fetchers";
 import {
   ApiActionAttendee,
   Attendee,
@@ -58,7 +58,7 @@ export const useAttendeeSearch = ({
   };
 
   const fetcher = async (): Promise<AttendeesManyResponse> =>
-    getAttendeesFetcher({
+    getAttendeesManyFetcher({
       organisation_id: currentOrganisation?.id,
       getIdToken,
       query,

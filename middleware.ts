@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { ClientPathname } from "./types/paths";
-import { PUBLIC_ROUTES } from "./utilities/constants/paths";
+import {
+  LOGGED_OUT_PUBLIC_ROUTES,
+  PUBLIC_ROUTES,
+} from "./utilities/constants/paths";
 import {
   generateCsrfToken,
   setCsrfTokenCookie,
@@ -42,8 +45,11 @@ export const middleware = async (
   // --- Authentication check.
   const token = req.cookies.get(CookieKey.TENDIFLOW_ID_TOKEN)?.value;
 
-  // --- Public route check.
+  // --- Route checks
   const isPublicRoute = PUBLIC_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  ); // Use PUBLIC_ROUTES instead
+  const isLoggedOutOnlyRoute = LOGGED_OUT_PUBLIC_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
 
@@ -54,15 +60,15 @@ export const middleware = async (
     return NextResponse.redirect(loginUrl);
   }
 
-  // If the user is authenticated and attempts to access a public-only route,
+  // If the user is authenticated and attempts to access a logged-out-only route,
   // redirect them to a default internal route.
-  if (token && isPublicRoute && pathname !== ClientPathname.LOGOUT) {
+  if (token && isLoggedOutOnlyRoute && pathname !== ClientPathname.LOGOUT) {
     const homeUrl = req.nextUrl.clone();
     homeUrl.pathname = ClientPathname.HOME;
     return NextResponse.redirect(homeUrl);
   }
 
-  // 7. All checks passed, proceed with the request.
+  // All checks passed, proceed with the request.
   return res;
 };
 

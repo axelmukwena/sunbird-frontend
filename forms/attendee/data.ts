@@ -2,6 +2,7 @@ import {
   AttendeeBaseCreate,
   AttendeeCheckinInfoCreate,
   AttendeeCreateGuestClient,
+  AttendeeFeedbackCreateClient,
   AttendeeUpdateGuestClient,
 } from "@/api/services/weaver/attendees/types";
 
@@ -87,4 +88,96 @@ export const getAttendeeRegisterData = ({
   };
 
   return data;
+};
+
+export interface LoadGuestAttendeeCreateData {
+  values: AttendeeFormSchema;
+}
+
+export interface LoadGuestAttendeeUpdateData {
+  values: AttendeeFormSchema;
+}
+
+export interface LoadGuestAttendeeFeedbackData {
+  values: Pick<AttendeeFormSchema, "feedback">;
+}
+
+/**
+ * Get the data to create a guest attendee (full guest check-in)
+ * @param {LoadGuestAttendeeCreateData} data - The form data to create a guest attendee
+ * @returns {AttendeeCreateGuestClient} - The data formatted for guest attendee creation API
+ */
+export const getGuestAttendeeCreateData = ({
+  values,
+}: LoadGuestAttendeeCreateData): AttendeeCreateGuestClient => {
+  const data: AttendeeCreateGuestClient = {
+    // Basic attendee information
+    email: values.email,
+    first_name: values.first_name,
+    last_name: values.last_name,
+    phone_number: values.phone_number || null,
+    organisation_name: values.organisation_name || null,
+    occupation: values.occupation || null,
+    custom_field_responses: values.custom_field_responses || null,
+    meeting_id: values.meeting_id,
+    user_id: values.user_id || null,
+    checkin: values.checkin as AttendeeCheckinInfoCreate,
+    feedback: values.feedback || null,
+  };
+
+  return data;
+};
+
+/**
+ * Get the data to update a guest attendee
+ * @param {LoadGuestAttendeeUpdateData} data - The form data to update a guest attendee
+ * @returns {AttendeeUpdateGuestClient} - The data formatted for guest attendee update API
+ */
+export const getGuestAttendeeUpdateData = ({
+  values,
+}: LoadGuestAttendeeUpdateData): AttendeeUpdateGuestClient => {
+  const data: AttendeeUpdateGuestClient = {
+    email: values.email,
+    first_name: values.first_name,
+    last_name: values.last_name,
+    phone_number: values.phone_number || null,
+    organisation_name: values.organisation_name || null,
+    occupation: values.occupation || null,
+    custom_field_responses: values.custom_field_responses || null,
+  };
+
+  return data;
+};
+
+/**
+ * Get the data for guest attendee feedback submission
+ * @param {LoadGuestAttendeeFeedbackData} data - The form data for feedback
+ * @returns {AttendeeFeedbackCreateClient} - The data formatted for feedback submission API
+ */
+export const getGuestAttendeeFeedbackData = ({
+  values,
+}: LoadGuestAttendeeFeedbackData): AttendeeFeedbackCreateClient => {
+  const data: AttendeeFeedbackCreateClient = {
+    feedback: values.feedback || null,
+  };
+
+  return data;
+};
+
+/**
+ * Helper function to create checkin info from metadata
+ */
+export const createCheckinInfo = (
+  fingerprint: string,
+  sessionId: string,
+  locationInfo: any,
+  deviceInfo: any,
+): AttendeeCheckinInfoCreate => {
+  return {
+    device_fingerprint: fingerprint,
+    session_id: sessionId,
+    checkin_datetime: new Date().toISOString(),
+    checkin_location: locationInfo,
+    checkin_device: deviceInfo,
+  };
 };

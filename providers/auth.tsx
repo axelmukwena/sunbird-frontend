@@ -7,10 +7,7 @@ import { LinearLoader } from "@/components/loaders/linear";
 import { useUserCredentials } from "@/hooks/profile/credentials";
 import { usePreviousPathname } from "@/hooks/utilities/previous-pathname";
 import { ClientPathname } from "@/types/paths";
-import {
-  LOGGED_OUT_PUBLIC_ROUTES,
-  UNTRACKED_ROUTES,
-} from "@/utilities/constants/paths";
+import { PUBLIC_ROUTES, UNTRACKED_ROUTES } from "@/utilities/constants/paths";
 
 import { useCurrentUserContext } from "./current-user";
 
@@ -42,7 +39,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
    * Decide if the current route is "public" (allowed without login).
    */
   const isPublicRoute = useMemo(
-    () => LOGGED_OUT_PUBLIC_ROUTES.includes(pathname),
+    () => PUBLIC_ROUTES.some((route) => pathname.startsWith(route)),
     [pathname],
   );
 
