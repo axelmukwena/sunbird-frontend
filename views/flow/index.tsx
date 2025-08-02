@@ -135,7 +135,7 @@ export const MeetingCheckInFlowView: FC<MeetingCheckInFlowViewProps> = ({
           result.visitorId,
         );
 
-        if (hasExistingCheckIn) {
+        if (hasExistingCheckIn.success) {
           setCurrentStep("already_checked_in");
           return;
         }
