@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 import { OrganisationService } from "@/api/services/weaver/organisations/service";
@@ -37,7 +36,6 @@ export const useOrganisationCreateUpdate = ({
 }: UseOrganisationCreateUpdateProps): UseOrganisationCreateUpdate => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { getIdToken } = useUserCredentials();
-  const router = useRouter();
 
   const {
     hook: {
@@ -68,11 +66,11 @@ export const useOrganisationCreateUpdate = ({
         message: "Organisation created successfully",
         type: "success",
       });
-      router.refresh();
       handleMutateOrganisations();
       if (setCloseDialog) {
         setCloseDialog();
       }
+      window.location.reload();
     } else {
       notify({ message: res.message, type: "error" });
     }
