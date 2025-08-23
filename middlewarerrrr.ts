@@ -15,11 +15,7 @@ export const middleware = async (
   req: NextRequest,
 ): Promise<NextResponse<unknown>> => {
   // Create a response that we can modify.
-  const res = NextResponse.next({
-    request: {
-      headers: new Headers(req.headers),
-    },
-  });
+  const res = NextResponse.next();
 
   // --- Set security headers.
   res.headers.set(
