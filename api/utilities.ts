@@ -103,7 +103,7 @@ export const getSeureNextRequestCookie = (): boolean =>
   ENVIRONMENT_VARIABLES.NODE_ENV !== "development" &&
   ENVIRONMENT_VARIABLES.NODE_ENV !== "test";
 
-export const getDomainNextRequestCookie = (): string | undefined =>
-  ENVIRONMENT_VARIABLES.NODE_ENV === "development"
-    ? "localhost"
-    : ENVIRONMENT_VARIABLES.NEXT_PUBLIC_SITE_DOMAIN_NAME;
+export const getDomainNextRequestCookie = (): string | undefined => undefined;
+// ENVIRONMENT_VARIABLES.NODE_ENV === "development"
+//   ? "localhost"
+//   : ENVIRONMENT_VARIABLES.NEXT_PUBLIC_SITE_DOMAIN_NAME;
