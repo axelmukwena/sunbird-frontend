@@ -35,8 +35,13 @@ export const MeetingPageContent: FC<MeetingPageContentProps> = ({
         />
       </ViewPageHeaderContainer>
       <ViewContent>
+        <span className="sm:hidden">
+          <MeetingRightSection meeting={meeting} />
+        </span>
         <MeetingLeftSection meeting={meeting} />
-        <MeetingRightSection />
+        <span className="hidden sm:block w-2/5">
+          <MeetingRightSection meeting={meeting} />
+        </span>
       </ViewContent>
     </ViewPageContent>
   );

@@ -297,25 +297,13 @@ export const MeetingContentView: FC<MeetingContentViewProps> = ({
       )}
 
       {/* Files & Media - Updated to use ImagesDisplayRow */}
-      {(meeting.qrcode ||
-        meeting.image ||
+      {(meeting.image ||
         (meeting.attachments && meeting.attachments.length > 0)) && (
         <DataDisplayContainer
           title="Files & Media"
           description="QR codes, images, and attachments"
           className="mb-8"
         >
-          {/* QR Code as special case */}
-          {meeting.qrcode && (
-            <ImagesDisplayRow
-              label="QR Code"
-              caption="QR code for easy meeting access"
-              images={[meeting.qrcode]}
-              gridCols={2}
-              showMetadata={true}
-            />
-          )}
-
           {/* Meeting Image using ImagesDisplayRow */}
           {meeting.image && (
             <ImagesDisplayRow

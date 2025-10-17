@@ -3,6 +3,7 @@ import {
   Download,
   EllipsisVertical,
   PenBox,
+  QrCode,
   Trash,
 } from "lucide-react";
 import { Fragment, useState } from "react";
@@ -22,6 +23,7 @@ import {
 import { StatusFieldView } from "@/components/ui/view";
 import { useMeetingDatabaseStatus } from "@/forms/meeting/hooks/database-status";
 import { useMeetingDelete } from "@/forms/meeting/hooks/delete";
+import { useRegenerateQrcode } from "@/forms/meeting/hooks/qrcode"; // Import the new hook
 import { DATABASE_STATUS_OPTIONS } from "@/utilities/constants/options";
 import { ExportMeetingDialog } from "@/views/attendees/many/export";
 
@@ -55,6 +57,13 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
   const { isSubmitting: isDeleting, handleDelete } = useMeetingDelete({
     meeting,
     handleMutateMeetings,
+  });
+
+  // Instantiate the new hook for regenerating the QR code
+  const { isRegenerating, handleRegenerateQrcode } = useRegenerateQrcode({
+    organisationId: meeting.organisation_id,
+    meeting,
+    onSuccess: handleMutateMeetings,
   });
 
   const handleActionClick = (action: ActionType): void => {
@@ -99,6 +108,12 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
     setIsDropdownOpen(false);
   };
 
+  // Handler for the new action
+  const handleRegenerateQrcodeClick = async (): Promise<void> => {
+    setIsDropdownOpen(false);
+    await handleRegenerateQrcode();
+  };
+
   return (
     <Fragment>
       <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -115,6 +130,13 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
           <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
           <DropdownMenuItem onClick={handleExportClick}>
             Export
+          </DropdownMenuItem>
+          {/* Add Regenerate QR Code menu item */}
+          <DropdownMenuItem
+            onClick={handleRegenerateQrcodeClick}
+            disabled={isRegenerating}
+          >
+            Regenerate QR
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleStatusAction}>
@@ -138,6 +160,16 @@ export const MeetingActionsMenu: React.FC<MeetingActionsMenuProps> = ({
         <Button variant="outline" size="sm" onClick={handleExportClick}>
           <Download className="size-4" />
           <span>Export</span>
+        </Button>
+        {/* Add Regenerate QR Code button for larger screens */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRegenerateQrcodeClick}
+          disabled={isRegenerating}
+        >
+          <QrCode className="size-4" />
+          <span>Regenerate QR</span>
         </Button>
         <Button variant="outline" size="sm" onClick={handleStatusAction}>
           {meeting.database_status === DatabaseStatus.ACTIVE && (

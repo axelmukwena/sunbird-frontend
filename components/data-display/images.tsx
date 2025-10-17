@@ -2,7 +2,6 @@ import { ExternalLink, Eye, Image as ImageIcon } from "lucide-react";
 import { FC, useState } from "react";
 
 import { WeaverFile, WeaverMimeType } from "@/api/services/weaver/types/file";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { getGoogleStorageFileUrl } from "@/utilities/helpers/file-storage";
@@ -16,7 +15,7 @@ interface ImagesDisplayRowProps {
   caption?: string | null;
   className?: string;
   maxImages?: number;
-  gridCols?: 2 | 3 | 4;
+  gridCols?: 1 | 2 | 3 | 4;
   showMetadata?: boolean;
 }
 
@@ -42,30 +41,6 @@ const formatFileSize = (bytes: number): string => {
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-};
-
-// Helper function to get image file extension from mime type
-const getImageExtension = (mimeType: WeaverMimeType): string => {
-  switch (mimeType) {
-    case WeaverMimeType.PNG:
-      return "PNG";
-    case WeaverMimeType.JPG:
-      return "JPG";
-    case WeaverMimeType.GIF:
-      return "GIF";
-    case WeaverMimeType.WEBP:
-      return "WEBP";
-    case WeaverMimeType.TIFF:
-      return "TIFF";
-    case WeaverMimeType.SVG:
-      return "SVG";
-    case WeaverMimeType.ICON:
-      return "ICO";
-    case WeaverMimeType.BMP:
-      return "BMP";
-    default:
-      return "IMG";
-  }
 };
 
 export const ImagesDisplayRow: FC<ImagesDisplayRowProps> = ({
@@ -117,6 +92,7 @@ export const ImagesDisplayRow: FC<ImagesDisplayRowProps> = ({
   }
 
   const gridClass = {
+    1: "grid-cols-1",
     2: "grid-cols-2",
     3: "grid-cols-3",
     4: "grid-cols-4",
@@ -182,14 +158,6 @@ export const ImagesDisplayRow: FC<ImagesDisplayRowProps> = ({
                         </Button>
                       </WeaverLink>
                     </div>
-
-                    {/* File Type Badge */}
-                    <Badge
-                      variant="secondary"
-                      className="absolute top-2 right-2 text-xs"
-                    >
-                      {getImageExtension(image.mime_type)}
-                    </Badge>
                   </div>
 
                   {/* Image Metadata */}

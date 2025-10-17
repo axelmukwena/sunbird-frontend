@@ -149,6 +149,7 @@ export interface MeetingBase {
 
 export interface MeetingQrcode {
   qrcode: WeaverFile | null;
+  check_in_url: string | null;
 }
 
 export interface MeetingImage {
