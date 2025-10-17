@@ -24,7 +24,7 @@ export const meetingFormDefaultValues = ({
     return date.toISOString().slice(0, 16);
   };
 
-  const foo = {
+  return {
     title: meeting?.title || "",
     description: meeting?.description || "",
     start_datetime: meeting?.start_datetime || formatDateTimeLocal(now),
@@ -59,6 +59,4 @@ export const meetingFormDefaultValues = ({
         }
       : undefined,
   };
-  console.log({ foo });
-  return foo;
 };

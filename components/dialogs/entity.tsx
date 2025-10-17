@@ -13,18 +13,18 @@ import { mergeTailwind } from "@/utilities/helpers/tailwind";
 import { ScrollArea } from "../ui/scroll-area";
 
 export const ENTITY_DIALOG_SIZE_CLASSES = {
-  sm: "w-[400px] sm:w-[500px] sm:max-w-[600px]",
-  md: "w-[400px] sm:w-[600px] sm:max-w-[800px]",
-  lg: "w-[400px] sm:w-[800px] sm:max-w-[1000px]",
-  xl: "w-[400px] sm:w-[1000px] sm:max-w-[1200px]",
+  sm: "w-[calc(100vw-10px)] sm:w-[500px] sm:max-w-[600px]",
+  md: "w-[calc(100vw-10px)] sm:w-[600px] sm:max-w-[800px]",
+  lg: "w-[calc(100vw-10px)] sm:w-[800px] sm:max-w-[1000px]",
+  xl: "w-[calc(100vw-10px)] sm:w-[1000px] sm:max-w-[1200px]",
   full: "w-full sm:w-[1400px] sm:max-w-[1400px]",
 };
 
 export const ENTITY_DIALOG_INNER_WIDTH_CLASSES = {
-  sm: "w-[calc(400px-50px)] sm:w-[calc(500px-50px)] sm:max-w-[calc(600px-50px)]",
-  md: "w-[calc(400px-50px)] sm:w-[calc(600px-50px)] sm:max-w-[calc(800px-50px)]",
-  lg: "w-[calc(400px-50px)] sm:w-[calc(800px-50px)] sm:max-w-[calc(1000px-50px)]",
-  xl: "w-[calc(400px-50px)] sm:w-[calc(1000px-50px)] sm:max-w-[calc(1200px-50px)]",
+  sm: "w-[calc(100vw-50px)] sm:w-[calc(500px-50px)] sm:max-w-[calc(600px-50px)]",
+  md: "w-[calc(100vw-50px)] sm:w-[calc(600px-50px)] sm:max-w-[calc(800px-50px)]",
+  lg: "w-[calc(100vw-50px)] sm:w-[calc(800px-50px)] sm:max-w-[calc(1000px-50px)]",
+  xl: "w-[calc(100vw-50px)] sm:w-[calc(1000px-50px)] sm:max-w-[calc(1200px-50px)]",
   full: "w-full sm:w-[calc(1395px-50px)] sm:max-w-[calc(1395px-50px)]",
 };
 

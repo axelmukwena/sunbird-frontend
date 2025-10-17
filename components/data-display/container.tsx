@@ -1,5 +1,7 @@
 import { FC, ReactNode } from "react";
 
+import { mergeTailwind } from "@/utilities/helpers/tailwind";
+
 interface DataDisplayContainerProps {
   title?: string;
   description?: string;
@@ -14,7 +16,7 @@ export const DataDisplayContainer: FC<DataDisplayContainerProps> = ({
   className = "",
 }) => {
   return (
-    <div className={className}>
+    <div className={mergeTailwind(className, "w-full")}>
       {(title || description) && (
         <div className="px-4 sm:px-0 mb-6">
           {title && (

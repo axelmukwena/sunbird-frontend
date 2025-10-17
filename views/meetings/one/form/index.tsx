@@ -38,7 +38,6 @@ export const MeetingForm: FC<MeetingFormProps> = ({
   const meetingForm = useMeetingForm({ meeting });
   const {
     hook: {
-      watch,
       control,
       formState: { errors },
     },
@@ -58,8 +57,6 @@ export const MeetingForm: FC<MeetingFormProps> = ({
 
   const isActiveForm = isRecordActive(meeting?.database_status);
   const isEditMode = Boolean(meeting);
-
-  console.log({ errors, coordinates: watch("coordinates") });
 
   return (
     <FormProvider {...meetingForm.hook}>

@@ -1,7 +1,32 @@
 import { FormEvent, KeyboardEvent } from "react";
 import { FieldErrors, UseFormReturn } from "react-hook-form";
 
-import { EmailVerificationConfirmFormSchema } from "./schema";
+import { User } from "@/api/services/weaver/users/types";
+
+import {
+  EmailVerificationConfirmFormSchema,
+  ProfileFormSchema,
+} from "./schema";
+
+export interface UseProfileFormProps {
+  user?: User | null;
+}
+
+export interface ProfileFormDefaultValuesProps {
+  user?: User | null;
+}
+
+export interface UseProfileForm {
+  hook: UseFormReturn<ProfileFormSchema>;
+  formErrorMessages: string[];
+  resetForm: () => void;
+  updateForm: (a?: User | null) => void;
+}
+
+export interface UseProfileUpdateForm {
+  handleOnSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  isSubmitting: boolean;
+}
 
 export interface EmailVerificationConfirmFormSchemaSchemaUseFormProps {}
 

@@ -1,5 +1,7 @@
 import { EmailVerificationConfirm } from "@/api/services/weaver/profile/types";
+import { UserUpdate } from "@/api/services/weaver/users/types";
 
+import { ProfileFormSchema } from "./schema";
 import { LoadEmailVerificationConfirmCreateData } from "./types";
 
 /**
@@ -15,4 +17,22 @@ export const getSignupCreateData = ({
     code: values.code,
   };
   return data;
+};
+
+interface GetProfileUpdateDataProps {
+  values: ProfileFormSchema;
+}
+
+export const getProfileUpdateData = ({
+  values,
+}: GetProfileUpdateDataProps): UserUpdate => {
+  return {
+    first_name: values.first_name,
+    last_name: values.last_name,
+    phone_number: values.phone_number,
+    organisation_name: values.organisation_name || null,
+    occupation: values.occupation || null,
+    language: values.language || null,
+    avatar_url: values.avatar_url || null,
+  };
 };

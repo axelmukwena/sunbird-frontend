@@ -15,6 +15,7 @@ import { PhonenumberDisplayRow } from "@/components/data-display/phonenumber";
 import { TextDisplayRow } from "@/components/data-display/text";
 import { useCurrentOrganisationContext } from "@/providers/current-organisation";
 import { Variant } from "@/types/general";
+import { mergeTailwind } from "@/utilities/helpers/tailwind";
 
 interface OrganisationContentViewProps {
   className?: string;
@@ -86,7 +87,7 @@ export const OrganisationContentView: FC<OrganisationContentViewProps> = ({
   };
 
   return (
-    <div className={className}>
+    <div className={mergeTailwind(className, "w-full")}>
       {/* Basic Information */}
       <DataDisplayContainer
         title="Organisation Details"
