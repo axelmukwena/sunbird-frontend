@@ -126,6 +126,21 @@ export const GuestAttendeeForm: FC<GuestAttendeeFormProps> = ({
                 />
               )}
             />
+          </FormRow>
+          <FormRow>
+            <FormField
+              control={control}
+              name="division"
+              render={({ field }) => (
+                <TextField
+                  field={field}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  label="Division"
+                  helpText="Your division within the organisation"
+                />
+              )}
+            />
             <FormField
               control={control}
               name="occupation"

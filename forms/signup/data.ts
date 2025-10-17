@@ -18,6 +18,7 @@ export const getSignupCreateData = ({
     phone_number: values.phone_number || null,
     avatar_url: values.avatar_url || null,
     organisation_name: values.organisation_name || null,
+    division: values.division || null,
     occupation: values.occupation || null,
     language: values.language || null,
   };

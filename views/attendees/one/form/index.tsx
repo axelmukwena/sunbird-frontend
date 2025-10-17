@@ -151,6 +151,22 @@ export const AttendeeForm: FC<AttendeeFormProps> = ({
                 />
               )}
             />
+          </FormRow>
+          <FormRow>
+            <FormField
+              control={control}
+              name="division"
+              render={({ field }) => (
+                <TextField
+                  field={field}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  label="Division"
+                  disabled={!isActiveForm}
+                  helpText="Department or division (optional)"
+                />
+              )}
+            />
             <FormField
               control={control}
               name="occupation"

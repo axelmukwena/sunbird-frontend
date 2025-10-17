@@ -132,6 +132,7 @@ export const ProfileContentView: FC<ProfileContentViewProps> = ({
           value={user.phone_number}
         />
         <TextDisplayRow label="Organisation" value={user.organisation_name} />
+        <TextDisplayRow label="Division" value={user.division} />
         <TextDisplayRow label="Occupation" value={user.occupation} />
         <TextDisplayRow
           label="Preferred Language"

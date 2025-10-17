@@ -30,6 +30,7 @@ export const profileDefaultValues = ({
   last_name: user?.last_name || "",
   phone_number: user?.phone_number || null,
   organisation_name: user?.organisation_name || null,
+  division: user?.division || null,
   occupation: user?.occupation || null,
   language: user?.language || Language.ENGLISH,
   avatar_url: user?.avatar_url || undefined,

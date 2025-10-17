@@ -114,6 +114,11 @@ export const AttendeeContentView: FC<AttendeeContentViewProps> = ({
           value={attendee.organisation_name}
         />
         <TextDisplayRow
+          label="Division"
+          caption="Division within the organisation"
+          value={attendee.division}
+        />
+        <TextDisplayRow
           label="Occupation"
           caption="Job title or role"
           value={attendee.occupation}

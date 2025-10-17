@@ -12,6 +12,7 @@ export const PROFILE_FORM_SCHEMA = z.object({
   phone_number: PHONE_NUMBER_OPTIONAL_SCHEMA,
   avatar_url: URL_OPTIONAL_FORM_SCHEMA,
   organisation_name: z.string().nullable().optional(),
+  division: z.string().nullable().optional(),
   occupation: z.string().nullable().optional(),
   language: z.enum(Language).nullable().optional(),
 });

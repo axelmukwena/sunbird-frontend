@@ -123,6 +123,15 @@ export const AttendeeColumns = (
     },
   },
   {
+    key: "division",
+    name: "Division",
+    width: 150,
+    resizable: true,
+    renderCell: ({ row }): ReactNode => {
+      return <span className="truncate">{row.division || "-"}</span>;
+    },
+  },
+  {
     key: "occupation",
     name: "Occupation",
     width: 150,

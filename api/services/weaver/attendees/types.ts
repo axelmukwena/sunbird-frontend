@@ -108,6 +108,7 @@ export interface AttendeeBase {
   last_name: string;
   phone_number: string | null;
   organisation_name: string | null;
+  division: string | null;
   occupation: string | null;
   custom_field_responses: AttendeeCustomFieldResponse[] | null;
 }

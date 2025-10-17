@@ -495,6 +495,14 @@ export const MeetingCheckInFlowView: FC<MeetingCheckInFlowViewProps> = ({
                         {attendee.organisation_name}
                       </p>
                     )}
+                    {attendee.division && (
+                      <p>
+                        <span className="font-medium text-gray-900">
+                          Division:
+                        </span>{" "}
+                        {attendee.division}
+                      </p>
+                    )}
                     {attendee.occupation && (
                       <p>
                         <span className="font-medium text-gray-900">
@@ -748,6 +756,12 @@ export const MeetingCheckInFlowView: FC<MeetingCheckInFlowViewProps> = ({
                     <p>
                       <span className="font-medium">Organisation:</span>{" "}
                       {formValues.organisation_name}
+                    </p>
+                  )}
+                  {formValues.division && (
+                    <p>
+                      <span className="font-medium">Division:</span>{" "}
+                      {formValues.division}
                     </p>
                   )}
                   {formValues.occupation && (

@@ -30,6 +30,7 @@ export interface ProfileUpdate {
   phone_number: string | null;
   avatar_url: string | null;
   organisation_name: string | null;
+  division: string | null;
   occupation: string | null;
   language: Language | null;
 }

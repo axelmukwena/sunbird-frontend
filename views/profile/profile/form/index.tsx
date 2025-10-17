@@ -144,6 +144,22 @@ export const ProfileForm: FC<ProfileFormProps> = ({
                 />
               )}
             />
+          </FormRow>
+          <FormRow>
+            <FormField
+              control={control}
+              name="division"
+              render={({ field }) => (
+                <TextField
+                  field={field}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  label="Division"
+                  placeholder="e.g., Marketing"
+                  disabled={!isActiveForm}
+                />
+              )}
+            />
             <FormField
               control={control}
               name="occupation"

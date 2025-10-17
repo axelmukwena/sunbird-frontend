@@ -87,6 +87,7 @@ const ATTENDEE_BASE_SCHEMA = z.object({
     .string()
     .max(255, "Organisation name is too long")
     .nullable(),
+  division: z.string().max(100, "Division is too long").nullable(),
   occupation: z.string().max(100, "Occupation is too long").nullable(),
   custom_field_responses: z
     .array(ATTENDEE_CUSTOM_FIELD_RESPONSE_SCHEMA)

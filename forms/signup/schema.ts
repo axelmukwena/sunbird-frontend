@@ -14,6 +14,7 @@ export const SIGNUP_FORM_SCHEMA = z.object({
   phone_number: PHONE_NUMBER_OPTIONAL_SCHEMA,
   avatar_url: URL_OPTIONAL_FORM_SCHEMA,
   organisation_name: z.string().optional(),
+  division: z.string().optional(),
   occupation: z.string().optional(),
   language: z.enum(Language).optional(),
 });

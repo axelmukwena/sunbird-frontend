@@ -28,6 +28,7 @@ export const attendeeFormDefaultValues = ({
     last_name: attendee?.last_name || "",
     phone_number: attendee?.phone_number || null,
     organisation_name: attendee?.organisation_name || null,
+    division: attendee?.division || null,
     occupation: attendee?.occupation || null,
     meeting_id: attendee?.meeting_id || meetingId,
     user_id: attendee?.user_id || userId || null,

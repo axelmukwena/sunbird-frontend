@@ -95,6 +95,7 @@ function prepareAttendeesData(attendees: Attendee[]): AttendeeRow[] {
     Email: attendee.email,
     Phone: attendee.phone_number,
     Organisation: attendee.organisation_name,
+    Division: attendee.division,
     Occupation: attendee.occupation,
     Status: attendee.attendance_status,
     "Check-in Time": attendee.checkin?.checkin_datetime

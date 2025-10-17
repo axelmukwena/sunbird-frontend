@@ -31,6 +31,7 @@ export const getProfileUpdateData = ({
     last_name: values.last_name,
     phone_number: values.phone_number,
     organisation_name: values.organisation_name || null,
+    division: values.division || null,
     occupation: values.occupation || null,
     language: values.language || null,
     avatar_url: values.avatar_url || null,
