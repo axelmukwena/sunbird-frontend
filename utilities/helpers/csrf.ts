@@ -100,7 +100,7 @@ export const ensureServerIdToken = async (): Promise<
     [HeaderKey.X_TENDIFLOW_CSRF_SECRET]: process.env.CSRF_SECRET ?? "",
     [HeaderKey.X_TENDIFLOW_REFRESH_TOKEN]: refresh,
   };
-  const url = `${process.env.NEXT_PUBLIC_PELICAN_BASE_URL}/api/oauth/token`;
+  const url = `${process.env.NEXT_PUBLIC_SITE_BASE_URL}/api/oauth/token`;
   const res = await fetch(url, {
     method: "POST",
     headers: requestHeaders,
