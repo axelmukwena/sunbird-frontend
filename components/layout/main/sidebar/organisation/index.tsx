@@ -20,9 +20,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useOrganisationMemberSearch } from "@/hooks/organisations/member-search";
 import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 import { useCurrentUserContext } from "@/contexts/current-user";
+import { useOrganisationMemberSearch } from "@/hooks/organisations/member-search";
 import { ClientPathname } from "@/types/paths";
 import { CreateOrganisation } from "@/views/organisations/one/create";
 
