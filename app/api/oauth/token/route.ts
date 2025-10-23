@@ -11,7 +11,7 @@ import {
 } from "@/api/utilities";
 import { ENVIRONMENT_VARIABLES } from "@/utilities/constants/environment";
 import { verifyCsrfToken } from "@/utilities/helpers/csrf";
-import { CookieKey } from "@/utilities/helpers/enums";
+import { CookieKey, HeaderKey } from "@/utilities/helpers/enums";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
 export const POST = async (req: NextRequest): Promise<NextResponse> => {
@@ -36,7 +36,9 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     const cooks = await cookies();
-    const refreshToken = cooks.get(CookieKey.TENDIFLOW_REFRESH_TOKEN)?.value;
+    const refreshToken =
+      cooks.get(CookieKey.TENDIFLOW_REFRESH_TOKEN)?.value ||
+      req.headers.get(HeaderKey.X_TENDIFLOW_REFRESH_TOKEN);
     if (!refreshToken) {
       return NextResponse.json(
         {

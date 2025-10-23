@@ -4,7 +4,7 @@ import { FC, Fragment } from "react";
 
 import { LinearLoader } from "@/components/loaders/linear";
 import { Separator } from "@/components/ui/separator";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 
 import { QuickActions } from "./actions";
 import { OrganisationStatisticsHome } from "./statistics";

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 
 import { Meeting } from "@/api/services/weaver/meetings/types";
 import { getFormErrorMessages } from "@/forms/general";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 
 import { meetingFormDefaultValues } from "../defaults";
 import { MEETING_FORM_SCHEMA, MeetingFormSchema } from "../schema";

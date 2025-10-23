@@ -10,7 +10,7 @@ import {
   logout as logoutOauth,
 } from "@/api/services/weaver/oauth/fetchers";
 import { OauthIdTokenPayload } from "@/api/services/weaver/oauth/types";
-import { PUBLIC_ROUTES } from "@/utilities/constants/paths";
+import { LOGGED_OUT_PUBLIC_ROUTES } from "@/utilities/constants/paths";
 import { isDateExpiringSoon } from "@/utilities/helpers/date";
 import { CookieKey } from "@/utilities/helpers/enums";
 
@@ -29,7 +29,7 @@ interface TokenPayloadFetched {
   payload: OauthIdTokenPayload;
 }
 
-interface UseUserCredentials {
+export interface UseUserCredentials {
   id?: string | null;
   payload: OauthIdTokenPayload | null;
   promptSignin: boolean;
@@ -88,7 +88,7 @@ export const useUserCredentials = (): UseUserCredentials => {
   const pathname = usePathname();
 
   const getTokenWithRefreshToken = useCallback(async (): Promise<string> => {
-    if (pathname && PUBLIC_ROUTES.includes(pathname)) {
+    if (pathname && LOGGED_OUT_PUBLIC_ROUTES.includes(pathname)) {
       // If on a public route, do not attempt to refresh token
       return "";
     }

@@ -7,7 +7,7 @@ import { FC } from "react";
 
 import { Organisation } from "@/api/services/weaver/organisations/types";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 import { ClientPathname } from "@/types/paths";
 
 interface NavOrganisationProps {

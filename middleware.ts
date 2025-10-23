@@ -1,76 +1,60 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { ClientPathname } from "./types/paths";
-import {
-  LOGGED_OUT_PUBLIC_ROUTES,
-  PUBLIC_ROUTES,
-} from "./utilities/constants/paths";
 import {
   generateCsrfToken,
   setCsrfTokenCookie,
 } from "./utilities/helpers/csrf";
 import { CookieKey } from "./utilities/helpers/enums";
 
-export const middleware = async (
+export async function middleware(
   req: NextRequest,
-): Promise<NextResponse<unknown>> => {
-  // Create a response that we can modify.
-  const res = NextResponse.next();
+): Promise<NextResponse<unknown>> {
+  const { pathname, hostname } = req.nextUrl;
 
-  // --- Set security headers.
-  res.headers.set(
+  // --- 1. Handle Redirects First ---
+  // If subdomain is "www", redirect to the root domain.
+  const hostParts = hostname.split(".");
+  if (hostParts.length > 2 && hostParts[0] === "www") {
+    const newHostname = hostname.replace("www.", "");
+    const url = new URL(pathname, `https://${newHostname}`);
+    return NextResponse.redirect(url);
+  }
+
+  // --- 2. Define Route Types ---
+  // const isPublicRoute = LOGGED_OUT_PUBLIC_ROUTES.some((route) =>
+  //   pathname.startsWith(route),
+  // );
+  const isApiRoute = pathname.startsWith("/api/");
+
+  // Allow API and QR code routes to pass through auth checks
+  if (isApiRoute) {
+    const response = NextResponse.next();
+    return response;
+  }
+
+  // --- 3. For all other valid requests, create the response and modify headers ---
+  // This is the "pass-through" case for authenticated users on protected routes,
+  // or anonymous users on public routes.
+  const response = NextResponse.next();
+
+  // Set security headers
+  response.headers.set(
     "Strict-Transport-Security",
     "max-age=63072000; includeSubDomains; preload",
   );
-  res.headers.set("X-Frame-Options", "DENY");
-  res.headers.set("X-Content-Type-Options", "nosniff");
-  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
 
-  // --- Ensure a CSRF token is present.
+  // Ensure a CSRF token is present
   const csrfToken = req.cookies.get(CookieKey.TENDIFLOW_CSRF_TOKEN)?.value;
   if (!csrfToken) {
     const newCsrfToken = generateCsrfToken();
-    setCsrfTokenCookie(res, newCsrfToken);
+    setCsrfTokenCookie(response, newCsrfToken);
   }
 
-  // --- Extract the request path and hostname.
-  const { pathname } = req.nextUrl;
-
-  // --- If is API route, do not require authentication.
-  const isNextApiRoute = pathname.startsWith("/api/");
-  if (isNextApiRoute) {
-    return res;
-  }
-
-  // --- Authentication check.
-  const token = req.cookies.get(CookieKey.TENDIFLOW_ID_TOKEN)?.value;
-
-  // --- Route checks
-  const isPublicRoute = PUBLIC_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  ); // Use PUBLIC_ROUTES instead
-  const isLoggedOutOnlyRoute = LOGGED_OUT_PUBLIC_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
-
-  // If no token is present and the route is not public, redirect to sign in.
-  if (!token && !isPublicRoute) {
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = ClientPathname.LOGIN;
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // If the user is authenticated and attempts to access a logged-out-only route,
-  // redirect them to a default internal route.
-  if (token && isLoggedOutOnlyRoute && pathname !== ClientPathname.LOGOUT) {
-    const homeUrl = req.nextUrl.clone();
-    homeUrl.pathname = ClientPathname.HOME;
-    return NextResponse.redirect(homeUrl);
-  }
-
-  // All checks passed, proceed with the request.
-  return res;
-};
+  return response;
+}
 
 export const config = {
   matcher: [

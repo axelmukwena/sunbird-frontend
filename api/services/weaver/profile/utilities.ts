@@ -20,8 +20,7 @@ interface GetProfileApiUrlV1Params {
  */
 const profileUrlBuilders: Record<ApiActionProfile, ProfileUrlBuilder> = {
   // Profile endpoints
-  [ApiActionProfile.GET_PROFILE]: ({ base_url, user_id }) =>
-    `${base_url}/${user_id}`,
+  [ApiActionProfile.GET_PROFILE]: ({ base_url }) => `${base_url}`,
   [ApiActionProfile.UPDATE_PROFILE]: ({ base_url, user_id }) =>
     `${base_url}/${user_id}`,
 

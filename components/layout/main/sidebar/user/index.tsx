@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useCurrentUserContext } from "@/providers/current-user";
+import { useCurrentUserContext } from "@/contexts/current-user";
 import { PROFILE_DROPDOWN_MENU_ITEMS } from "@/utilities/constants/general";
 import { stringToBackgroundColor } from "@/utilities/helpers/colors";
 import { getInitials } from "@/utilities/helpers/text";

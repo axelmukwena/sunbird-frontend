@@ -2,7 +2,7 @@
 
 import React, { FC, Fragment } from "react";
 
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 
 import { HomeHeader } from "./header";
 import { OrganisationMemberHome } from "./organisation";

@@ -9,7 +9,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 
 import { NavMain } from "./main";
 import { NavOrganisation } from "./organisation";

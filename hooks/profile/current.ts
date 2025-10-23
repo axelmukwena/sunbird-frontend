@@ -31,7 +31,7 @@ interface GetCurrentUserPermissions {
 /**
  * Get current user permissions from memberships
  */
-const getCurrentUserPermissions = (
+export const getCurrentUserPermissions = (
   user?: User | null,
 ): GetCurrentUserPermissions => {
   if (!user?.memberships) {

@@ -10,7 +10,7 @@ import {
   MeetingsManyResponse,
 } from "@/api/services/weaver/meetings/types";
 import { getMeetingSwrUrlV1 } from "@/api/services/weaver/meetings/utilities";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
 import { useUserCredentials } from "../profile/credentials";

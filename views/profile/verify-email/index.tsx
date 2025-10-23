@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePreviousPathname } from "@/hooks/utilities/previous-pathname";
-import { useCurrentUserContext } from "@/providers/current-user";
+import { useCurrentUserContext } from "@/contexts/current-user";
 import { ClientPathname } from "@/types/paths";
 
 import { VerifyEmailForm } from "./form";

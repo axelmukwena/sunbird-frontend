@@ -19,7 +19,6 @@ import {
   ApiActionProfile,
   ChangePasswordProps,
   ChangePasswordResponseApi,
-  GetProfileProps,
   GetProfileResponseApi,
   SuccessResponse,
   UpdateProfileProps,
@@ -33,15 +32,12 @@ import { getProfileApiUrlV1 } from "./utilities";
 export class ProfileService extends WeaverApiService {
   /**
    * Get current user profile
-   * @param {GetProfileProps} props - The user ID
    * @returns {Promise<DataServiceResponse<User | null>>} The user profile response
    */
-  async getProfile({
-    user_id,
-  }: GetProfileProps): Promise<DataServiceResponse<User | null>> {
+  async getProfile(): Promise<DataServiceResponse<User | null>> {
     try {
       const res = await this.api.get<GetProfileResponseApi>(
-        getProfileApiUrlV1({ action: ApiActionProfile.GET_PROFILE, user_id }),
+        getProfileApiUrlV1({ action: ApiActionProfile.GET_PROFILE }),
       );
 
       if (

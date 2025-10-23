@@ -6,7 +6,7 @@ import { FC, Fragment, useState } from "react";
 
 import { EntityDialog } from "@/components/dialogs/entity";
 import { Button } from "@/components/ui/button";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 
 import { OrganisationForm } from "../form";
 

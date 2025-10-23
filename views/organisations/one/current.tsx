@@ -3,7 +3,7 @@
 import { FC } from "react";
 
 import { LinearLoader } from "@/components/loaders/linear";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 
 import { OrganisationView } from ".";
 

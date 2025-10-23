@@ -9,6 +9,8 @@ export enum HeaderKey {
   AUTHORIZATION = "authorization",
   X_TOTAL_COUNT = "x-total-count",
   X_TENDIFLOW_CSRF_TOKEN = "x-tendiflow-csrf-token",
+  X_TENDIFLOW_CSRF_SECRET = "x-tendiflow-csrf-secret",
+  X_TENDIFLOW_REFRESH_TOKEN = "x-tendiflow-refresh-token",
   CONTENT_TYPE = "content-type",
   X_FORWARDED_FOR = "x-forwarded-for",
   USER_AGENT = "user-agent",

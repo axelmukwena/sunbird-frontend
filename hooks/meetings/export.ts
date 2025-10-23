@@ -9,7 +9,7 @@ import {
 } from "@/api/services/weaver/attendees/types";
 import { Meeting } from "@/api/services/weaver/meetings/types";
 import { DatabaseStatus, OrderBy } from "@/api/services/weaver/types/general";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 import {
   exportMeetingToExcel,
   isExportSupported,

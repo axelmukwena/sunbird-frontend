@@ -9,19 +9,19 @@ import {
   UseCurrentOrganisation,
 } from "@/api/services/weaver/organisations/types";
 import { getOrganisationApiUrlV1 } from "@/api/services/weaver/organisations/utilities";
+import { useCurrentUserContext } from "@/contexts/current-user";
 import { LocalStorageKey } from "@/storage/local/enum";
 import { setLocalStorageItem } from "@/storage/local/storage";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
 import { useUserCredentials } from "../profile/credentials";
-import { useCurrentUser } from "../profile/current";
 
 /**
  * A hook to get and manage the current organisation.
  * @returns The current organisation and methods to manage it.
  */
 export const useCurrentOrganisation = (): UseCurrentOrganisation => {
-  const { currentOrganisationId } = useCurrentUser();
+  const { currentOrganisationId } = useCurrentUserContext();
   const { getIdToken } = useUserCredentials();
   const { mutate } = useSWRConfig();
 

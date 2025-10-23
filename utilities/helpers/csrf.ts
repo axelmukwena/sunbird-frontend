@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+import { OauthToken } from "@/api/services/weaver/oauth/types";
+import { DataServiceResponse } from "@/api/services/weaver/types/general";
 import {
   getDomainNextRequestCookie,
   getSeureNextRequestCookie,
@@ -48,7 +50,17 @@ export function setCsrfTokenCookie(res: NextResponse, token: string): void {
  * @param {NextRequest} req The request
  * @returns {boolean} If the CSRF token is valid
  */
+/**
+ * Middleware to verify CSRF token from request headers
+ * @param {NextRequest} req The request
+ * @returns {boolean} If the CSRF token is valid
+ */
 export const verifyCsrfToken = async (req: NextRequest): Promise<boolean> => {
+  const csrfSecret = req.headers.get(HeaderKey.X_TENDIFLOW_CSRF_SECRET);
+  if (csrfSecret && csrfSecret === process.env.CSRF_SECRET) {
+    return true;
+  }
+
   // Fetch the CSRF token from cookies using Next.js built-in cookie handling
   const cooks = await cookies();
   const csrfTokenFromCookie = cooks.get(CookieKey.TENDIFLOW_CSRF_TOKEN)?.value;
@@ -59,4 +71,45 @@ export const verifyCsrfToken = async (req: NextRequest): Promise<boolean> => {
     return false;
   }
   return csrfTokenFromCookie === csrfTokenFromHeader;
+};
+
+const isISOExpiringSoon = (iso?: string, minutes = 5): boolean => {
+  if (!iso) return true;
+  return new Date(iso).getTime() - Date.now() <= minutes * 60_000;
+};
+
+export const ensureServerIdToken = async (): Promise<
+  string | null | undefined
+> => {
+  const cooks = await cookies();
+  const idToken = cooks.get(CookieKey.TENDIFLOW_ID_TOKEN)?.value ?? null;
+  const expiresAt = cooks.get(CookieKey.TENDIFLOW_ID_TOKEN_EXPIRES_AT)?.value;
+  const refresh = cooks.get(CookieKey.TENDIFLOW_REFRESH_TOKEN)?.value;
+  const isExpiringSoon = isISOExpiringSoon(expiresAt, 5);
+
+  if (idToken && !isExpiringSoon) {
+    return idToken;
+  }
+
+  if (!refresh) {
+    return null;
+  }
+
+  const requestHeaders = {
+    [HeaderKey.CONTENT_TYPE]: "application/json",
+    [HeaderKey.X_TENDIFLOW_CSRF_SECRET]: process.env.CSRF_SECRET ?? "",
+    [HeaderKey.X_TENDIFLOW_REFRESH_TOKEN]: refresh,
+  };
+  const url = `${process.env.NEXT_PUBLIC_PELICAN_BASE_URL}/api/oauth/token`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: requestHeaders,
+  });
+
+  if (!res.ok) {
+    return null;
+  }
+
+  const data = (await res.json()) as DataServiceResponse<OauthToken | null>;
+  return data.data?.id_token;
 };

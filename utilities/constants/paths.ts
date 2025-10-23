@@ -4,13 +4,13 @@ import {
   ClientPublicPathname,
 } from "@/types/paths";
 
-export const PUBLIC_ROUTES: string[] = [
-  ...Object.values(ClientPublicPathname),
+export const LOGGED_OUT_ROUTES: string[] = [
   ...Object.values(ClientLoggedOutPathname),
 ];
 
 export const LOGGED_OUT_PUBLIC_ROUTES: string[] = [
-  ...Object.values(ClientLoggedOutPathname),
+  ...LOGGED_OUT_ROUTES,
+  ...Object.values(ClientPublicPathname),
 ];
 
 export const UNTRACKED_ROUTES: string[] = [

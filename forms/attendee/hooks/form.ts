@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 
 import { Attendee } from "@/api/services/weaver/attendees/types";
 import { getFormErrorMessages } from "@/forms/general";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 
 import { attendeeFormDefaultValues } from "../defaults";
 import { ATTENDEE_FORM_SCHEMA, AttendeeFormSchema } from "../schema";

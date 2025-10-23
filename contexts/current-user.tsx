@@ -3,43 +3,32 @@
 import React, { createContext, FC, ReactNode, useContext } from "react";
 
 import { CurrentUserContextType } from "@/api/services/weaver/profile/types";
-import { LinearLoader } from "@/components/loaders/linear";
-import { useCurrentUser } from "@/hooks/profile/current";
+import { User } from "@/api/services/weaver/users/types";
+import { getCurrentUserPermissions } from "@/hooks/profile/current";
 
 const CurrentUserContext = createContext<CurrentUserContextType | undefined>(
   undefined,
 );
 
-interface CurrentUserProviderProps {
+interface CurrentUserContextProviderProps {
   children: ReactNode;
+  initialCurrentUser?: User | null;
 }
 
-export const CurrentUserProvider: FC<CurrentUserProviderProps> = ({
-  children,
-}) => {
-  const {
-    currentUser,
-    isLoading,
-    error,
-    mutateCurrentUser,
-    organisationIds,
-    currentOrganisationId,
-    currentOrganisationPermission,
-  } = useCurrentUser();
-
-  // Show loader while fetching current user data
-  if (isLoading) {
-    return <LinearLoader />;
-  }
+export const CurrentUserContextProvider: FC<
+  CurrentUserContextProviderProps
+> = ({ children, initialCurrentUser }) => {
+  const { organisationIds, currentOrganisationId, permission } =
+    getCurrentUserPermissions(initialCurrentUser);
 
   const contextValue: CurrentUserContextType = {
-    currentUser,
-    isLoading,
-    error,
-    mutateCurrentUser,
+    currentUser: initialCurrentUser ?? null,
+    isLoading: false,
+    error: "",
+    mutateCurrentUser: () => Promise.resolve(),
     organisationIds,
     currentOrganisationId,
-    currentOrganisationPermission,
+    currentOrganisationPermission: permission,
   };
 
   return (

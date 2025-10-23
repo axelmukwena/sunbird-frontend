@@ -13,7 +13,7 @@ import { EmailDisplayRow } from "@/components/data-display/email";
 import { LinkDisplayRow } from "@/components/data-display/link";
 import { PhonenumberDisplayRow } from "@/components/data-display/phonenumber";
 import { TextDisplayRow } from "@/components/data-display/text";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 import { Variant } from "@/types/general";
 import { mergeTailwind } from "@/utilities/helpers/tailwind";
 

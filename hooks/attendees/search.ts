@@ -10,7 +10,7 @@ import {
   AttendeesManyResponse,
 } from "@/api/services/weaver/attendees/types";
 import { getAttendeeSwrUrlV1 } from "@/api/services/weaver/attendees/utilities";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
 import { getErrorMessage } from "@/utilities/helpers/errors";
 
 import { useUserCredentials } from "../profile/credentials";

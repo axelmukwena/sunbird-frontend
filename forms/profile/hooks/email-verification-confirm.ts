@@ -9,7 +9,7 @@ import { requestEmailVerification } from "@/api/services/weaver/profile/fetchers
 import { ProfileNoTokenService } from "@/api/services/weaver/profile/notoken.service";
 import { getFormErrorMessages } from "@/forms/general";
 import { usePreviousPathname } from "@/hooks/utilities/previous-pathname";
-import { useCurrentUserContext } from "@/providers/current-user";
+import { useCurrentUserContext } from "@/contexts/current-user";
 import { ClientPathname } from "@/types/paths";
 import { notify } from "@/utilities/helpers/toaster";
 

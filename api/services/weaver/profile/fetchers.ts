@@ -35,7 +35,7 @@ export const currentUserFetcher = async ({
   }
   const token = await getIdToken();
   const profileService = new ProfileService(token);
-  const res = await profileService.getProfile({ user_id: id });
+  const res = await profileService.getProfile();
   if (res.success && res.data) {
     return res.data;
   }
@@ -44,6 +44,34 @@ export const currentUserFetcher = async ({
   }
 
   throw new Error(res.message);
+};
+
+interface GetCurrentUserServerSideProps {
+  token?: string | null;
+}
+
+/**
+ * Fetches the current user including organisation info on the server side.
+ * @param {GetCurrentUserServerSideProps} props The fetcher props.
+ * @returns {Promise<CurrentUserDetails | null>} The current user.
+ */
+export const getCurrentUserServerSide = async ({
+  token,
+}: GetCurrentUserServerSideProps): Promise<User | null> => {
+  if (!token) {
+    return null;
+  }
+  try {
+    const profileService = new ProfileService(token);
+    const res = await profileService.getProfile();
+    if (res.success && res.data) {
+      return res.data;
+    }
+    console.error(res.message);
+  } catch (error) {
+    console.error(`Failed to fetch current user. ${getErrorMessage(error)}`);
+  }
+  return null;
 };
 
 interface EmailVerificationRequestProps {

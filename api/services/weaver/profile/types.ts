@@ -92,9 +92,6 @@ export type EmailVerificationConfirmResponseApi =
   | ErrorApiResponse;
 
 // Service props
-export interface GetProfileProps {
-  user_id: string;
-}
 
 export interface UpdateProfileProps {
   user_id: string;

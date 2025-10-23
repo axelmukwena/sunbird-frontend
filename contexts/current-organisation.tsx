@@ -6,18 +6,16 @@ import { CurrentOrganisationContextType } from "@/api/services/weaver/organisati
 import { LinearLoader } from "@/components/loaders/linear";
 import { useCurrentOrganisation } from "@/hooks/organisations/current";
 
-import { CurrentUserProvider } from "./current-user";
-
 const CurrentOrganisationContext = createContext<
   CurrentOrganisationContextType | undefined
 >(undefined);
 
-interface CurrentOrganisationProviderProps {
+interface CurrentOrganisationContextProviderProps {
   children: ReactNode;
 }
 
-export const CurrentOrganisationProvider: FC<
-  CurrentOrganisationProviderProps
+export const CurrentOrganisationContextProvider: FC<
+  CurrentOrganisationContextProviderProps
 > = ({ children }) => {
   const {
     currentOrganisation,
@@ -41,11 +39,9 @@ export const CurrentOrganisationProvider: FC<
   };
 
   return (
-    <CurrentUserProvider>
-      <CurrentOrganisationContext.Provider value={contextValue}>
-        {children}
-      </CurrentOrganisationContext.Provider>
-    </CurrentUserProvider>
+    <CurrentOrganisationContext.Provider value={contextValue}>
+      {children}
+    </CurrentOrganisationContext.Provider>
   );
 };
 

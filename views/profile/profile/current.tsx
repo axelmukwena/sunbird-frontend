@@ -3,7 +3,7 @@
 import { FC } from "react";
 
 import { LinearLoader } from "@/components/loaders/linear";
-import { useCurrentUserContext } from "@/providers/current-user";
+import { useCurrentUserContext } from "@/contexts/current-user";
 
 import { ProfileView } from ".";
 

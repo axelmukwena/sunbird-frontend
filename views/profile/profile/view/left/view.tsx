@@ -10,7 +10,7 @@ import { ImagesDisplayRow } from "@/components/data-display/images";
 import { PhonenumberDisplayRow } from "@/components/data-display/phonenumber";
 import { TextDisplayRow } from "@/components/data-display/text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useCurrentUserContext } from "@/providers/current-user";
+import { useCurrentUserContext } from "@/contexts/current-user";
 import { Variant } from "@/types/general";
 import { mergeTailwind } from "@/utilities/helpers/tailwind";
 

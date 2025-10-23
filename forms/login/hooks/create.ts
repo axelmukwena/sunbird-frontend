@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { FormEvent, KeyboardEvent, useState } from "react";
 import { Control } from "react-hook-form";
 
@@ -32,7 +31,6 @@ interface UseLoginCreate {
 export const useLoginCreate = ({
   formHook,
 }: UseLoginCreateProps): UseLoginCreate => {
-  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const {
@@ -63,7 +61,7 @@ export const useLoginCreate = ({
     const data = getLoginCreateData({ values });
     const res = await loginWithEmailPassword({ data });
     if (res.success) {
-      router.push(ClientPathname.HOME);
+      window.location.pathname = ClientPathname.HOME;
     } else {
       notify({ message: res.message, type: "error" });
     }

@@ -21,8 +21,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useOrganisationMemberSearch } from "@/hooks/organisations/member-search";
-import { useCurrentOrganisationContext } from "@/providers/current-organisation";
-import { useCurrentUserContext } from "@/providers/current-user";
+import { useCurrentOrganisationContext } from "@/contexts/current-organisation";
+import { useCurrentUserContext } from "@/contexts/current-user";
 import { ClientPathname } from "@/types/paths";
 import { CreateOrganisation } from "@/views/organisations/one/create";
 
