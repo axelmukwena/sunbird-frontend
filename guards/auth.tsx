@@ -45,7 +45,7 @@ export const RequireAuth: FC<Props> = ({ children }) => {
 
     // Case 1: Unauthenticated user on a protected route.
     if (!currentUser && !isPublicRoute && pathname !== ClientPathname.LOGOUT) {
-      // router.replace(ClientPathname.LOGOUT);
+      router.replace(ClientPathname.LOGOUT);
       return; // Return early to prevent other conditions from running
     }
 
