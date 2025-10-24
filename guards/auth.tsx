@@ -37,6 +37,11 @@ export const RequireAuth: FC<Props> = ({ children }) => {
 
     const isPublicRoute = LOGGED_OUT_PUBLIC_ROUTES.includes(pathname);
     const isLoggedOutRoute = LOGGED_OUT_ROUTES.includes(pathname);
+    const isFlowRoute = pathname.includes(ClientPathname.FLOW);
+
+    if (isFlowRoute) {
+      return; // Allow flow routes to pass through without checks
+    }
 
     // Case 1: Unauthenticated user on a protected route.
     if (!currentUser && !isPublicRoute && pathname !== ClientPathname.LOGOUT) {
@@ -67,6 +72,11 @@ export const RequireAuth: FC<Props> = ({ children }) => {
 
     const isPublicRoute = LOGGED_OUT_PUBLIC_ROUTES.includes(pathname);
     const isLoggedOutRoute = LOGGED_OUT_ROUTES.includes(pathname);
+    const isFlowRoute = pathname.includes(ClientPathname.FLOW);
+
+    if (isFlowRoute) {
+      return true; // Always render flow routes
+    }
 
     // If a redirect is going to happen, don't render the children yet.
     if (!currentUser && !isPublicRoute && pathname !== ClientPathname.LOGOUT)

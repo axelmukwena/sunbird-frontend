@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { ClientPathname } from "./types/paths";
 import {
   generateCsrfToken,
   setCsrfTokenCookie,
@@ -25,9 +26,10 @@ export async function middleware(
   //   pathname.startsWith(route),
   // );
   const isApiRoute = pathname.startsWith("/api/");
+  const isFlowRoute = pathname.includes(ClientPathname.FLOW);
 
   // Allow API and QR code routes to pass through auth checks
-  if (isApiRoute) {
+  if (isApiRoute || isFlowRoute) {
     const response = NextResponse.next();
     return response;
   }
